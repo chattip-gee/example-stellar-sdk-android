@@ -109,7 +109,7 @@
                 android:layout_height="wrap_content"
                 android:text="2. Friendbot: Fund a test network account"
                 android:textColor="@android:color/black"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="25dp"
                 android:textStyle="bold"
                 android:textSize="16sp"
                 app:layout_constraintTop_toBottomOf="@id/cst_generate_keypair"
@@ -178,7 +178,7 @@
                 android:layout_marginEnd="10dp"
                 android:visibility="gone"
                 tools:visibility="visible"
-                android:background="@drawable/result_background"
+                android:background="@drawable/result_success_background"
                 app:layout_constraintStart_toStartOf="@+id/btn_generate_keypair"
                 app:layout_constraintTop_toBottomOf="@+id/btn_get_test_network_lumens">
 
@@ -194,13 +194,26 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
+        <ProgressBar
+                android:id="@+id/pb_one"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:indeterminate="true"
+                android:visibility="gone"
+                tools:visibility="visible"
+                android:layout_marginStart="16dp"
+                android:indeterminateTint="@color/stoke_default_button_color"
+                app:layout_constraintStart_toEndOf="@id/btn_get_test_network_lumens"
+                app:layout_constraintTop_toTopOf="@id/btn_get_test_network_lumens"
+                app:layout_constraintBottom_toBottomOf="@id/btn_get_test_network_lumens"/>
+
         <TextView
                 android:id="@+id/tv_title3"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:text="3. Getting the account’s details "
                 android:textColor="@android:color/black"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="25dp"
                 android:textStyle="bold"
                 android:textSize="16sp"
                 app:layout_constraintTop_toBottomOf="@id/cst_result_friendbot"
@@ -213,13 +226,26 @@
                 android:background="@drawable/btn_background"
                 android:padding="10dp"
                 android:layout_marginTop="10dp"
-                android:text="Get Account"
+                android:text="Get Account Balance"
                 android:textSize="14sp"
                 android:textColor="@android:color/white"
                 android:textAllCaps="false"
                 android:stateListAnimator="@null"
                 app:layout_constraintTop_toBottomOf="@id/tv_title3"
                 app:layout_constraintStart_toStartOf="@id/tv_title3"/>
+
+        <ProgressBar
+                android:id="@+id/pb_two"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:indeterminate="true"
+                android:visibility="gone"
+                tools:visibility="visible"
+                android:layout_marginStart="16dp"
+                android:indeterminateTint="@color/stoke_default_button_color"
+                app:layout_constraintStart_toEndOf="@id/btn_get_account"
+                app:layout_constraintTop_toTopOf="@id/btn_get_account"
+                app:layout_constraintBottom_toBottomOf="@id/btn_get_account"/>
 
         <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/cst_account_detail"
@@ -241,6 +267,7 @@
                     android:layout_height="wrap_content"
                     android:textColor="@android:color/black"
                     android:textSize="12sp"
+                    tools:text="Balances for account GATEP5ZLIXU4QDCRBY3KG5VRXWHIIN2LSY6RONUUP74P777C5LDRPCUI"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"/>
 
@@ -251,6 +278,7 @@
                     android:textColor="@android:color/black"
                     android:textSize="12sp"
                     android:layout_marginTop="6dp"
+                    tools:text="Type: native, Balance: 10000"
                     app:layout_constraintTop_toBottomOf="@id/tv_account_detail_id"
                     app:layout_constraintStart_toStartOf="@id/tv_account_detail_id"/>
 
