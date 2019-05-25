@@ -1,9 +1,9 @@
 package com.android.stellarsdk.api;
 
-import com.android.stellarsdk.api.callback.AccountCallback;
-import com.android.stellarsdk.api.callback.BaseCallback;
+import com.android.stellarsdk.api.callback.OnResponse;
 import com.android.stellarsdk.api.model.account.AccountResponse;
 import com.android.stellarsdk.api.model.friendbot.FriendBotResponse;
+import com.android.stellarsdk.api.model.transaction.TransactionResponse;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
@@ -11,9 +11,8 @@ import rx.schedulers.Schedulers;
 
 public class ApiManager {
 
-    public void getFriendBot(String addr, final BaseCallback baseCallback) {
-        Observable<FriendBotResponse> observable = new ConnectionManager.Builder()
-                .build()
+    public void getFriendBot(String addr, final OnResponse<FriendBotResponse> callback) {
+        Observable<FriendBotResponse> observable = new ConnectionManager()
                 .initGetFriendBot(addr);
 
         observable.observeOn(AndroidSchedulers.mainThread())
@@ -27,21 +26,19 @@ public class ApiManager {
 
                     @Override
                     public void onError(Throwable e) {
-                        baseCallback.onApiError(e.getMessage());
+                        callback.onApiError(e.getMessage());
                     }
 
                     @Override
                     public void onNext(FriendBotResponse response) {
-                        baseCallback.onApiSuccess("SUCCESS! You have a new account :)\n" + response.getLinks().getTransaction().getHref());
+                        callback.onApiSuccess(response);
                     }
                 });
     }
 
-    public void getAccount(String accountId, final AccountCallback accountCallback) {
-        Observable<AccountResponse> observable = new ConnectionManager.Builder()
-                .setPath(accountId)
-                .build()
-                .initGetAccount();
+    public void getAccounts(String accountId, final OnResponse<AccountResponse> callback) {
+        Observable<AccountResponse> observable = new ConnectionManager()
+                .initGetAccounts(accountId);
 
         observable.observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
@@ -54,12 +51,37 @@ public class ApiManager {
 
                     @Override
                     public void onError(Throwable e) {
-                        accountCallback.onApiError(e.getMessage());
+                        callback.onApiError(e.getMessage());
                     }
 
                     @Override
-                    public void onNext(AccountResponse accountResponse) {
-                        accountCallback.onApiSuccess(accountResponse);
+                    public void onNext(AccountResponse response) {
+                        callback.onApiSuccess(response);
+                    }
+                });
+    }
+
+    public void getTransaction(String hash, final OnResponse<TransactionResponse> callback) {
+        Observable<TransactionResponse> observable = new ConnectionManager()
+                .initGetTransactions(hash);
+
+        observable.observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
+                .subscribe(new Subscriber<TransactionResponse>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        callback.onApiError(e.getMessage());
+                    }
+
+                    @Override
+                    public void onNext(TransactionResponse response) {
+                        callback.onApiSuccess(response);
                     }
                 });
     }
