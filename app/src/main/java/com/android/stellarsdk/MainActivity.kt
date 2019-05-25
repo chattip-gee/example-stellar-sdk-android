@@ -4,10 +4,10 @@ import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import com.android.stellarsdk.api.ApiManager
 import com.android.stellarsdk.api.callback.OnResponse
-import com.android.stellarsdk.api.model.account.AccountResponse
 import com.android.stellarsdk.api.model.friendbot.FriendBotResponse
+import com.android.stellarsdk.api.remote.Horizon
+import com.android.stellarsdk.api.restapi.ApiManager
 import kotlinx.android.synthetic.main.activity_main.*
 import org.stellar.sdk.KeyPair
 
@@ -32,8 +32,9 @@ class MainActivity : AppCompatActivity() {
             cst_account_detail.visibility = View.GONE
             pb_two.visibility = View.VISIBLE
             tv_account_detail_id.text = "Balances for account \n" + pair?.accountId
-            ApiManager().getAccounts(pair?.accountId, object : OnResponse<AccountResponse> {
-                override fun onApiError(error: String) {
+
+            Horizon.getBalance(pair!!, object : OnResponse<org.stellar.sdk.responses.AccountResponse> {
+                override fun onError(error: String) {
                     pb_two.visibility = View.GONE
                     tv_account_detail.text = error
                     cst_account_detail.background =
@@ -41,7 +42,7 @@ class MainActivity : AppCompatActivity() {
                     cst_account_detail.visibility = View.VISIBLE
                 }
 
-                override fun onApiSuccess(response: AccountResponse) {
+                override fun onSuccess(response: org.stellar.sdk.responses.AccountResponse) {
                     for (balance in response.balances) {
                         pb_two.visibility = View.GONE
                         tv_account_detail.text =
@@ -60,7 +61,7 @@ class MainActivity : AppCompatActivity() {
             cst_result_friendbot.visibility = View.GONE
             pb_one.visibility = View.VISIBLE
             ApiManager().getFriendBot(pair?.accountId, object : OnResponse<FriendBotResponse> {
-                override fun onApiError(error: String) {
+                override fun onError(error: String) {
                     pb_one.visibility = View.GONE
                     tv_result_friend_bot.text = error
                     cst_result_friendbot.background =
@@ -68,7 +69,7 @@ class MainActivity : AppCompatActivity() {
                     cst_result_friendbot.visibility = View.VISIBLE
                 }
 
-                override fun onApiSuccess(response: FriendBotResponse) {
+                override fun onSuccess(response: FriendBotResponse) {
                     pb_one.visibility = View.GONE
                     tv_result_friend_bot.text = "SUCCESS! You have a new account :)"
                     cst_result_friendbot.background =

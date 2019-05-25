@@ -1,4 +1,4 @@
-package com.android.stellarsdk.api;
+package com.android.stellarsdk.api.restapi;
 
 /**
  * Created by Chattip Soontaku.

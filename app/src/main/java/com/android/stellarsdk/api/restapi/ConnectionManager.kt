@@ -1,4 +1,4 @@
-package com.android.stellarsdk.api
+package com.android.stellarsdk.api.restapi
 
 import com.android.stellarsdk.api.model.account.AccountResponse
 import com.android.stellarsdk.api.model.friendbot.FriendBotResponse

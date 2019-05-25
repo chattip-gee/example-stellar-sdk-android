@@ -1,4 +1,4 @@
-package com.android.stellarsdk.api;
+package com.android.stellarsdk.api.restapi;
 
 import com.android.stellarsdk.api.callback.OnResponse;
 import com.android.stellarsdk.api.model.account.AccountResponse;
@@ -26,12 +26,12 @@ public class ApiManager {
 
                     @Override
                     public void onError(Throwable e) {
-                        callback.onApiError(e.getMessage());
+                        callback.onError(e.getMessage());
                     }
 
                     @Override
                     public void onNext(FriendBotResponse response) {
-                        callback.onApiSuccess(response);
+                        callback.onSuccess(response);
                     }
                 });
     }
@@ -51,12 +51,12 @@ public class ApiManager {
 
                     @Override
                     public void onError(Throwable e) {
-                        callback.onApiError(e.getMessage());
+                        callback.onError(e.getMessage());
                     }
 
                     @Override
                     public void onNext(AccountResponse response) {
-                        callback.onApiSuccess(response);
+                        callback.onSuccess(response);
                     }
                 });
     }
@@ -76,12 +76,12 @@ public class ApiManager {
 
                     @Override
                     public void onError(Throwable e) {
-                        callback.onApiError(e.getMessage());
+                        callback.onError(e.getMessage());
                     }
 
                     @Override
                     public void onNext(TransactionResponse response) {
-                        callback.onApiSuccess(response);
+                        callback.onSuccess(response);
                     }
                 });
     }
