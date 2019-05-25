@@ -1,6 +1,7 @@
 package com.android.stellarsdk
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -10,6 +11,7 @@ import com.android.stellarsdk.api.remote.Horizon
 import com.android.stellarsdk.api.restapi.ApiManager
 import kotlinx.android.synthetic.main.activity_main.*
 import org.stellar.sdk.KeyPair
+import org.stellar.sdk.responses.SubmitTransactionResponse
 
 
 class MainActivity : AppCompatActivity() {
@@ -25,6 +27,19 @@ class MainActivity : AppCompatActivity() {
         onClickGetFriendbot()
 
         onClickGetAccounts()
+
+        btn_get_transaction.setOnClickListener {
+            Horizon.sendMoney(pair!!, object : OnResponse<SubmitTransactionResponse> {
+                override fun onError(error: String) {
+                    Log.d("ComeHere ", "onError $error")
+                }
+
+                override fun onSuccess(response: SubmitTransactionResponse) {
+                    Log.d("ComeHere ", "onSuccess ")
+
+                }
+            })
+        }
     }
 
     private fun onClickGetAccounts() {

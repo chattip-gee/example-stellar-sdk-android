@@ -3,11 +3,12 @@ package com.android.stellarsdk.api.remote
 import android.os.AsyncTask
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import com.android.stellarsdk.api.callback.OnResponse
-import org.stellar.sdk.KeyPair
-import org.stellar.sdk.Network
-import org.stellar.sdk.Server
+import org.stellar.sdk.*
+import org.stellar.sdk.KeyPair.fromAccountId
 import org.stellar.sdk.responses.AccountResponse
+import org.stellar.sdk.responses.SubmitTransactionResponse
 import shadow.okhttp3.OkHttpClient
 import java.util.concurrent.TimeUnit
 
@@ -27,6 +28,50 @@ object Horizon : HorizonTasks {
             }
         }
         HORIZON_SERVER = createServer(serverAddress)
+    }
+
+    fun sendMoney(keyPair: KeyPair, listener: OnResponse<SubmitTransactionResponse>) {
+        LoadSendMoney(keyPair, listener)
+    }
+
+    private fun LoadSendMoney(keyPair: KeyPair, listener: OnResponse<SubmitTransactionResponse>) {
+        AsyncTask.execute {
+            val server = getServer()
+            try {
+                val source = KeyPair.fromSecretSeed(keyPair.secretSeed)
+                val destination = fromAccountId("GC3RDG2BYV6CM77X663K72G34EYHYJVDPD7SFXKKFLZOFQM3UJTW5NHG")
+
+                val accountResponse = server.accounts().account(keyPair)
+                val transaction = Transaction.Builder(accountResponse)
+                    .setTimeout(1000)
+                    .addOperation(PaymentOperation.Builder(destination, AssetTypeNative(), "10").build())
+                    .addMemo(Memo.text("Test Transaction"))
+                    .build()
+                transaction.sign(source)
+
+                try {
+                    val transactionResponse = server.submitTransaction(transaction)
+                    Log.d("ComeHere ", "Success")
+                    Handler(Looper.getMainLooper()).post {
+                        listener.onSuccess(transactionResponse)
+                    }
+                } catch (e: Exception) {
+                    Log.d("ComeHere ", "fail " + e.message)
+                    // If the result is unknown (no response body, timeout etc.) we simply resubmit
+                    // already built transaction:
+                    // SubmitTransactionResponse response = server.submitTransaction(transaction);
+                }
+
+
+            } catch (error: Exception) {
+                error.message?.let {
+                    listener.onError(it)
+                } ?: run {
+                    listener.onError("fail to send money")
+                }
+
+            }
+        }
     }
 
     fun getBalance(keyPair: KeyPair, listener: OnResponse<AccountResponse>) {
