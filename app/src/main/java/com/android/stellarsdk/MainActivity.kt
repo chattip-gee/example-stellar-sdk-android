@@ -1,7 +1,6 @@
 package com.android.stellarsdk
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -21,6 +20,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        scv_page.scrollTo(0, 100)
 
         onClickGenerateKeyPair()
 
@@ -28,17 +28,31 @@ class MainActivity : AppCompatActivity() {
 
         onClickGetAccounts()
 
-        btn_get_transaction.setOnClickListener {
-            Horizon.sendMoney(pair!!, object : OnResponse<SubmitTransactionResponse> {
-                override fun onError(error: String) {
-                    Log.d("ComeHere ", "onError $error")
-                }
+        btn_send_money.setOnClickListener {
+            cst_result_send.visibility = View.GONE
+            pb_three.visibility = View.VISIBLE
+            Horizon.doSendMoney(
+                "GC3RDG2BYV6CM77X663K72G34EYHYJVDPD7SFXKKFLZOFQM3UJTW5NHG",
+                pair!!.secretSeed,
+                edt_send_memo.text.toString(),
+                edt_send_amount.text.toString(),
+                object : OnResponse<SubmitTransactionResponse> {
+                    override fun onError(error: String) {
+                        pb_three.visibility = View.GONE
+                        tv_result_send.text = error
+                        cst_result_send.background =
+                            ContextCompat.getDrawable(this@MainActivity, R.drawable.result_fail_background)
+                        cst_result_send.visibility = View.VISIBLE
+                    }
 
-                override fun onSuccess(response: SubmitTransactionResponse) {
-                    Log.d("ComeHere ", "onSuccess ")
-
-                }
-            })
+                    override fun onSuccess(response: SubmitTransactionResponse) {
+                        pb_three.visibility = View.GONE
+                        tv_result_send.text = "Successfully!"
+                        cst_result_send.background =
+                            ContextCompat.getDrawable(this@MainActivity, R.drawable.result_success_background)
+                        cst_result_send.visibility = View.VISIBLE
+                    }
+                })
         }
     }
 

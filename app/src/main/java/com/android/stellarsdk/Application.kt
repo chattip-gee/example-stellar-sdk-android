@@ -1,11 +1,11 @@
 package com.android.stellarsdk
 
-import android.app.Application
+import androidx.multidex.MultiDexApplication
 import com.android.stellarsdk.api.remote.Horizon
 import com.android.stellarsdk.api.remote.ServerType
 import com.android.stellarsdk.api.restapi.ApiConstant
 
-class Application : Application() {
+class Application : MultiDexApplication() {
 
     override fun onCreate() {
         super.onCreate()

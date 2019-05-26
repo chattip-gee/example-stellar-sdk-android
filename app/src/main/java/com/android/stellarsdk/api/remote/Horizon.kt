@@ -3,10 +3,10 @@ package com.android.stellarsdk.api.remote
 import android.os.AsyncTask
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import com.android.stellarsdk.api.callback.OnResponse
 import org.stellar.sdk.*
 import org.stellar.sdk.KeyPair.fromAccountId
+import org.stellar.sdk.Transaction.Builder.TIMEOUT_INFINITE
 import org.stellar.sdk.responses.AccountResponse
 import org.stellar.sdk.responses.SubmitTransactionResponse
 import shadow.okhttp3.OkHttpClient
@@ -30,44 +30,50 @@ object Horizon : HorizonTasks {
         HORIZON_SERVER = createServer(serverAddress)
     }
 
-    fun sendMoney(keyPair: KeyPair, listener: OnResponse<SubmitTransactionResponse>) {
-        LoadSendMoney(keyPair, listener)
+    fun doSendMoney(
+        destAddress: String,
+        secretSeed: CharArray,
+        memo: String,
+        amount: String,
+        listener: OnResponse<SubmitTransactionResponse>
+    ) {
+        loadSendMoney(destAddress, secretSeed, memo, amount, listener)
     }
 
-    private fun LoadSendMoney(keyPair: KeyPair, listener: OnResponse<SubmitTransactionResponse>) {
+    private fun loadSendMoney(
+        destAddress: String,
+        secretSeed: CharArray,
+        memo: String,
+        amount: String,
+        listener: OnResponse<SubmitTransactionResponse>
+    ) {
         AsyncTask.execute {
             val server = getServer()
+            val sourceKeyPair = KeyPair.fromSecretSeed(secretSeed)
+            val destKeyPair = fromAccountId(destAddress)
+
+            val accountResponse = server.accounts().account(sourceKeyPair)
+
+            val transaction = Transaction.Builder(accountResponse)
+                .setTimeout(TIMEOUT_INFINITE)
+                .setOperationFee(100)
+                .addOperation(PaymentOperation.Builder(destKeyPair, AssetTypeNative(), amount).build())
+                .addMemo(Memo.text(memo))
+                .build()
+            transaction.sign(sourceKeyPair)
+
             try {
-                val source = KeyPair.fromSecretSeed(keyPair.secretSeed)
-                val destination = fromAccountId("GC3RDG2BYV6CM77X663K72G34EYHYJVDPD7SFXKKFLZOFQM3UJTW5NHG")
-
-                val accountResponse = server.accounts().account(keyPair)
-                val transaction = Transaction.Builder(accountResponse)
-                    .setTimeout(1000)
-                    .addOperation(PaymentOperation.Builder(destination, AssetTypeNative(), "10").build())
-                    .addMemo(Memo.text("Test Transaction"))
-                    .build()
-                transaction.sign(source)
-
-                try {
-                    val transactionResponse = server.submitTransaction(transaction)
-                    Log.d("ComeHere ", "Success")
-                    Handler(Looper.getMainLooper()).post {
-                        listener.onSuccess(transactionResponse)
-                    }
-                } catch (e: Exception) {
-                    Log.d("ComeHere ", "fail " + e.message)
-                    // If the result is unknown (no response body, timeout etc.) we simply resubmit
-                    // already built transaction:
-                    // SubmitTransactionResponse response = server.submitTransaction(transaction);
+                val transactionResponse = server.submitTransaction(transaction)
+                Handler(Looper.getMainLooper()).post {
+                    if (transactionResponse.isSuccess) listener.onSuccess(transactionResponse)
+                    else listener.onError("Address identified for : " + sourceKeyPair.accountId)
                 }
-
 
             } catch (error: Exception) {
                 error.message?.let {
                     listener.onError(it)
                 } ?: run {
-                    listener.onError("fail to send money")
+                    listener.onError("Transaction Failed")
                 }
 
             }
@@ -75,10 +81,10 @@ object Horizon : HorizonTasks {
     }
 
     fun getBalance(keyPair: KeyPair, listener: OnResponse<AccountResponse>) {
-        LoadBalances(keyPair, listener)
+        loadBalances(keyPair, listener)
     }
 
-    private fun LoadBalances(keyPair: KeyPair, listener: OnResponse<AccountResponse>) {
+    private fun loadBalances(keyPair: KeyPair, listener: OnResponse<AccountResponse>) {
         AsyncTask.execute {
             val server = getServer()
             try {
