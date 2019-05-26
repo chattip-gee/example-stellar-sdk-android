@@ -28,6 +28,10 @@ class MainActivity : AppCompatActivity() {
         onClickGetAccounts()
 
         onClickSendMoney()
+
+        btn_receive_money.setOnClickListener {
+            Horizon.doReceiveMoney(pair!!.accountId)
+        }
     }
 
     private fun onClickSendMoney() {
