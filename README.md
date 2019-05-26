@@ -1,6 +1,7 @@
 # stellar-sdk-android
 This available on dev branch
-ref https://www.stellar.org/laboratory/
+
+Reference: https://www.stellar.org/laboratory/
 
 1. Integrated StellarSDK
 2. Feature generate key pair
