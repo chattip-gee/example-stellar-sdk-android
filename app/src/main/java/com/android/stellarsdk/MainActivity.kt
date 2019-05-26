@@ -61,11 +61,12 @@ class MainActivity : AppCompatActivity() {
         btn_send_money.setOnClickListener {
             cst_result_send.visibility = View.GONE
             pb_three.visibility = View.VISIBLE
-            Horizon.doSendMoney(
+            Horizon.doSendMoneyByAsset(
                 "GC3RDG2BYV6CM77X663K72G34EYHYJVDPD7SFXKKFLZOFQM3UJTW5NHG",
                 pair!!.secretSeed,
                 edt_send_memo.text.toString(),
                 edt_send_amount.text.toString(),
+                "AstroDollar",
                 object : OnResponse<SubmitTransactionResponse> {
                     override fun onError(error: String) {
                         pb_three.visibility = View.GONE
