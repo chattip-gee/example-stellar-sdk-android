@@ -18,6 +18,7 @@ import java.util.concurrent.TimeUnit
 
 
 object Horizon : HorizonTasks {
+    //TODO REFACTOR
     private lateinit var HORIZON_SERVER: Server
     override fun init(server: ServerType) {
         var serverAddress = ""
@@ -48,18 +49,6 @@ object Horizon : HorizonTasks {
         } else {
             loadSendMoney(receivingAddr, issuingAddr, memo, amount, listener)
         }
-    }
-
-    fun doSendMoneyByAsset(
-        receivingAddr: String,
-        issuingAddr: CharArray,
-        memo: String,
-        amount: String,
-        assetName: String,
-        limit: String,
-        listener: OnResponse<SubmitTransactionResponse>
-    ) {
-        loadSendMoneyByAsset(receivingAddr, issuingAddr, memo, amount, assetName, limit, listener)
     }
 
     private fun loadSendMoneyByAsset(
@@ -106,16 +95,6 @@ object Horizon : HorizonTasks {
                 error.message?.let { listener.onError(it) } ?: run { listener.onError("Something went wrong") }
             }
         }
-    }
-
-    fun doSendMoney(
-        destAddress: String,
-        secretSeed: CharArray,
-        memo: String,
-        amount: String,
-        listener: OnResponse<SubmitTransactionResponse>
-    ) {
-        loadSendMoney(destAddress, secretSeed, memo, amount, listener)
     }
 
     private fun loadSendMoney(
