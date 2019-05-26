@@ -88,7 +88,6 @@ class MainActivity : AppCompatActivity() {
             if (pair == null) Toast.makeText(applicationContext, "You don't have account", Toast.LENGTH_LONG).show()
 
             pair?.apply {
-                cst_transaction_receive.visibility = View.VISIBLE
                 cst_result_send.visibility = View.GONE
                 if (select_others.isChecked) {
                     if (!edt_send_memo.text.isNullOrEmpty() && !edt_send_amount.text.isNullOrEmpty() && !edt_asset_code.text.isNullOrEmpty() && !edt_limit.text.isNullOrEmpty()) {
@@ -107,6 +106,7 @@ class MainActivity : AppCompatActivity() {
                                     cst_result_send.background =
                                         ContextCompat.getDrawable(this@MainActivity, R.drawable.result_fail_background)
                                     cst_result_send.visibility = View.VISIBLE
+                                    cst_transaction_receive.visibility = View.GONE
                                 }
 
                                 override fun onSuccess(response: SubmitTransactionResponse) {
@@ -118,6 +118,7 @@ class MainActivity : AppCompatActivity() {
                                             R.drawable.result_success_background
                                         )
                                     cst_result_send.visibility = View.VISIBLE
+                                    cst_transaction_receive.visibility = View.VISIBLE
                                 }
                             })
                     } else Toast.makeText(applicationContext, "Please fill up this form.", Toast.LENGTH_LONG).show()
@@ -138,6 +139,7 @@ class MainActivity : AppCompatActivity() {
                                     cst_result_send.background =
                                         ContextCompat.getDrawable(this@MainActivity, R.drawable.result_fail_background)
                                     cst_result_send.visibility = View.VISIBLE
+                                    cst_transaction_receive.visibility = View.GONE
                                 }
 
                                 override fun onSuccess(response: SubmitTransactionResponse) {
@@ -149,6 +151,7 @@ class MainActivity : AppCompatActivity() {
                                             R.drawable.result_success_background
                                         )
                                     cst_result_send.visibility = View.VISIBLE
+                                    cst_transaction_receive.visibility = View.VISIBLE
                                 }
                             })
                     } else Toast.makeText(applicationContext, "Please fill up this form.", Toast.LENGTH_LONG).show()
