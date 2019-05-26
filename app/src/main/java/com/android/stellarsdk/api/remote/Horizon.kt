@@ -35,52 +35,55 @@ object Horizon : HorizonTasks {
     }
 
     fun doSendMoneyByAsset(
-        destAddress: String,
-        secretSeed: CharArray,
+        receivingAddr: String,
+        issuingAddr: CharArray,
         memo: String,
         amount: String,
         assetName: String,
+        limit: String,
         listener: OnResponse<SubmitTransactionResponse>
     ) {
-        loadSendMoneyByAsset(destAddress, secretSeed, memo, amount, assetName, listener)
+        loadSendMoneyByAsset(receivingAddr, issuingAddr, memo, amount, assetName, limit, listener)
     }
 
     private fun loadSendMoneyByAsset(
-        destAddress: String,
-        secretSeed: CharArray,
+        receivingAddr: String,
+        issuingAddr: CharArray,
         memo: String,
         amount: String,
         assetName: String,
+        limit: String,
         listener: OnResponse<SubmitTransactionResponse>
     ) {
         AsyncTask.execute {
             val server = getServer()
-            val issuingKeys = KeyPair.fromSecretSeed(secretSeed)
-            val receivingKeys = KeyPair.fromSecretSeed("SCYNHADZEENTICMPLFSDAA4HGHMGXZSCOLY7APBPUJBPYZWEA4YF4JL2")
+            val issuingKeys = KeyPair.fromSecretSeed(issuingAddr)
+            val receivingKeys = KeyPair.fromSecretSeed(receivingAddr)
 
-            val astroDollar = createNonNativeAsset("AstroDollar", issuingKeys)
+            val asset = createNonNativeAsset(assetName, issuingKeys)
             val receiving = server.accounts().account(receivingKeys)
-            val allowAstroDollars = Transaction.Builder(receiving)
+            val allowAsset = Transaction.Builder(receiving)
                 .setTimeout(TIMEOUT_INFINITE)
                 .setOperationFee(100)
-                .addOperation(ChangeTrustOperation.Builder(astroDollar, "1000").build())
+                .addOperation(ChangeTrustOperation.Builder(asset, limit).build())
                 .build()
-            allowAstroDollars.sign(receivingKeys)
-            server.submitTransaction(allowAstroDollars)
+            allowAsset.sign(receivingKeys)
+            server.submitTransaction(allowAsset)
 
             val issuing = server.accounts().account(issuingKeys)
-            val sendAstroDollars = Transaction.Builder(issuing)
+            val sendAsset = Transaction.Builder(issuing)
                 .setTimeout(TIMEOUT_INFINITE)
                 .setOperationFee(100)
-                .addOperation(PaymentOperation.Builder(receivingKeys, astroDollar, "10").build())
+                .addOperation(PaymentOperation.Builder(receivingKeys, asset, amount).build())
+                .addMemo(Memo.text(memo))
                 .build()
-            sendAstroDollars.sign(issuingKeys)
+            sendAsset.sign(issuingKeys)
 
             try {
-                val transactionResponse = server.submitTransaction(sendAstroDollars)
+                val transactionResponse = server.submitTransaction(sendAsset)
                 Handler(Looper.getMainLooper()).post {
                     if (transactionResponse.isSuccess) listener.onSuccess(transactionResponse)
-                    else listener.onError("Address identified for : $receivingKeys")
+                    else listener.onError("Address identified for : ${receivingKeys.accountId}")
                 }
 
             } catch (error: Exception) {
