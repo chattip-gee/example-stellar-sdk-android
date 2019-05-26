@@ -18,6 +18,7 @@ class MainActivity : AppCompatActivity() {
 
     var pair: KeyPair? = null
 
+    //TODO REFACTOR
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -31,6 +32,25 @@ class MainActivity : AppCompatActivity() {
         onClickSendMoney()
 
         onClickReceiveMoney()
+
+        setDestination()
+    }
+
+    private fun setDestination() {
+        edt_send_destination.setText("GBDV7JYTKYZ3623PV63YYYOU34T6ICKL7GMMYGH2STU734RI3PJB6XM2")
+        select_others.setOnClickListener {
+            edt_send_destination.setText("SCYNHADZEENTICMPLFSDAA4HGHMGXZSCOLY7APBPUJBPYZWEA4YF4JL2")
+            select_others.isChecked = true
+            select_xlm.isChecked = false
+            li_fill_others.visibility = View.VISIBLE
+        }
+
+        select_xlm.setOnClickListener {
+            edt_send_destination.setText("GBDV7JYTKYZ3623PV63YYYOU34T6ICKL7GMMYGH2STU734RI3PJB6XM2")
+            select_others.isChecked = false
+            select_xlm.isChecked = true
+            li_fill_others.visibility = View.GONE
+        }
     }
 
     private fun onClickReceiveMoney() {
@@ -61,30 +81,57 @@ class MainActivity : AppCompatActivity() {
         btn_send_money.setOnClickListener {
             cst_result_send.visibility = View.GONE
             pb_three.visibility = View.VISIBLE
-            Horizon.doSendMoneyByAsset(
-                "SCYNHADZEENTICMPLFSDAA4HGHMGXZSCOLY7APBPUJBPYZWEA4YF4JL2",
-                pair!!.secretSeed,
-                edt_send_memo.text.toString(),
-                edt_send_amount.text.toString(),
-                "GeeDollar",
-                "1000",
-                object : OnResponse<SubmitTransactionResponse> {
-                    override fun onError(error: String) {
-                        pb_three.visibility = View.GONE
-                        tv_result_send.text = error
-                        cst_result_send.background =
-                            ContextCompat.getDrawable(this@MainActivity, R.drawable.result_fail_background)
-                        cst_result_send.visibility = View.VISIBLE
-                    }
+            if (select_others.isChecked) {
+                Horizon.sendMoneyCustom(
+                    "SCYNHADZEENTICMPLFSDAA4HGHMGXZSCOLY7APBPUJBPYZWEA4YF4JL2",
+                    pair!!.secretSeed,
+                    edt_send_memo.text.toString(),
+                    edt_send_amount.text.toString(),
+                    edt_asset_code.text.toString(),
+                    edt_limit.text.toString(),
+                    object : OnResponse<SubmitTransactionResponse> {
+                        override fun onError(error: String) {
+                            pb_three.visibility = View.GONE
+                            tv_result_send.text = error
+                            cst_result_send.background =
+                                ContextCompat.getDrawable(this@MainActivity, R.drawable.result_fail_background)
+                            cst_result_send.visibility = View.VISIBLE
+                        }
 
-                    override fun onSuccess(response: SubmitTransactionResponse) {
-                        pb_three.visibility = View.GONE
-                        tv_result_send.text = "SUCCESS! Has been sent account :)"
-                        cst_result_send.background =
-                            ContextCompat.getDrawable(this@MainActivity, R.drawable.result_success_background)
-                        cst_result_send.visibility = View.VISIBLE
-                    }
-                })
+                        override fun onSuccess(response: SubmitTransactionResponse) {
+                            pb_three.visibility = View.GONE
+                            tv_result_send.text = "SUCCESS! Has been sent account :)"
+                            cst_result_send.background =
+                                ContextCompat.getDrawable(this@MainActivity, R.drawable.result_success_background)
+                            cst_result_send.visibility = View.VISIBLE
+                        }
+                    })
+            } else {
+                Horizon.sendMoneyCustom(
+                    "GBDV7JYTKYZ3623PV63YYYOU34T6ICKL7GMMYGH2STU734RI3PJB6XM2",
+                    pair!!.secretSeed,
+                    edt_send_memo.text.toString(),
+                    edt_send_amount.text.toString(),
+                    null,
+                    null,
+                    object : OnResponse<SubmitTransactionResponse> {
+                        override fun onError(error: String) {
+                            pb_three.visibility = View.GONE
+                            tv_result_send.text = error
+                            cst_result_send.background =
+                                ContextCompat.getDrawable(this@MainActivity, R.drawable.result_fail_background)
+                            cst_result_send.visibility = View.VISIBLE
+                        }
+
+                        override fun onSuccess(response: SubmitTransactionResponse) {
+                            pb_three.visibility = View.GONE
+                            tv_result_send.text = "SUCCESS! Has been sent account :)"
+                            cst_result_send.background =
+                                ContextCompat.getDrawable(this@MainActivity, R.drawable.result_success_background)
+                            cst_result_send.visibility = View.VISIBLE
+                        }
+                    })
+            }
         }
     }
 

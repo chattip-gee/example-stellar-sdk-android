@@ -92,6 +92,7 @@
                     app:layout_constraintStart_toEndOf="@id/tv_public_key"
                     app:layout_constraintTop_toTopOf="@id/tv_public_key"
                     android:paddingStart="10dp"
+                    android:paddingEnd="0dp"
                     android:hint="GATEP5ZLIXU4QDCRBY3KG5VRXWHIIN2LSY6RONUUP74P777C5LDRPCUI"/>
 
             <TextView
@@ -116,6 +117,7 @@
                     app:layout_constraintStart_toEndOf="@id/tv_secret_key"
                     app:layout_constraintTop_toTopOf="@id/tv_secret_key"
                     android:paddingStart="10dp"
+                    android:paddingEnd="0dp"
                     android:hint="SBC5THX3X5CFLWVCJIMWD7S2NRRQRUD7BTLGFFYXV33EDNUXAI57DU2V"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
@@ -349,7 +351,7 @@
                     android:enabled="false"
                     android:textColor="@color/md_grey_800"
                     android:textSize="13sp"
-                    android:text="GC3RDG2BYV6CM77X663K72G34EYHYJVDPD7SFXKKFLZOFQM3UJTW5NHG"/>
+                    android:text="GBDV7JYTKYZ3623PV63YYYOU34T6ICKL7GMMYGH2STU734RI3PJB6XM2"/>
 
             <TextView
                     android:id="@+id/tv_send_base_free"
@@ -360,6 +362,7 @@
                     android:textSize="10sp"
                     app:layout_constraintBottom_toTopOf="@id/edt_send_base_free"
                     app:layout_constraintStart_toStartOf="parent"/>
+
             <EditText
                     android:id="@+id/edt_send_base_free"
                     android:layout_width="0dp"
@@ -400,6 +403,81 @@
                     android:inputType="text"
                     android:textSize="13sp"
                     android:hint="memo"/>
+
+            <TextView
+                    android:id="@+id/tv_asset"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="Asset"
+                    android:textColor="@color/stoke_default_button_color"
+                    android:textSize="10sp"
+                    android:layout_marginTop="10dp"
+                    app:layout_constraintTop_toBottomOf="@id/edt_send_memo"
+                    app:layout_constraintStart_toStartOf="@id/edt_send_memo"/>
+
+            <RadioGroup
+                    android:id="@+id/group_select"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    app:layout_constraintTop_toBottomOf="@id/tv_asset"
+                    app:layout_constraintStart_toStartOf="@id/tv_asset"
+                    android:gravity="center_horizontal"
+                    android:checkedButton="1">
+
+                <RadioButton
+                        android:id="@+id/select_xlm"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/md_grey_800"
+                        android:textSize="13sp"
+                        android:buttonTint="@color/stoke_default_button_color"
+                        android:checked="true"
+                        android:text="Stellar Lumens (XLM)"/>
+
+                <RadioButton
+                        android:id="@+id/select_others"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/md_grey_800"
+                        android:textSize="13sp"
+                        android:buttonTint="@color/stoke_default_button_color"
+                        android:layout_marginStart="18dp"
+                        android:text="Others"/>
+
+            </RadioGroup>
+
+            <LinearLayout
+                    android:id="@+id/li_fill_others"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toBottomOf="@id/group_select"
+                    app:layout_constraintStart_toStartOf="@id/group_select"
+                    android:visibility="gone"
+                    tools:visibility="visible"
+                    android:orientation="vertical">
+
+                <EditText
+                        android:id="@+id/edt_asset_code"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="10dp"
+                        android:inputType="text"
+                        android:textSize="13sp"
+                        android:textColor="@color/md_grey_800"
+                        android:hint="BTC"/>
+
+                <EditText
+                        android:id="@+id/edt_limit"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:padding="10dp"
+                        android:inputType="number"
+                        android:textSize="13sp"
+                        android:hint="limit"/>
+            </LinearLayout>
+
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -482,8 +560,7 @@
                 android:textAllCaps="false"
                 android:stateListAnimator="@null"
                 app:layout_constraintTop_toBottomOf="@id/tv_title5"
-                app:layout_constraintStart_toStartOf="@id/tv_title5"
-        />
+                app:layout_constraintStart_toStartOf="@id/tv_title5"/>
 
         <ProgressBar
                 android:id="@+id/pb_four"

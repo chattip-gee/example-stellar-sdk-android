@@ -34,6 +34,22 @@ object Horizon : HorizonTasks {
         HORIZON_SERVER = createServer(serverAddress)
     }
 
+    fun sendMoneyCustom(
+        receivingAddr: String,
+        issuingAddr: CharArray,
+        memo: String,
+        amount: String,
+        assetName: String?,
+        limit: String?,
+        listener: OnResponse<SubmitTransactionResponse>
+    ) {
+        if (assetName != null && limit != null) {
+            loadSendMoneyByAsset(receivingAddr, issuingAddr, memo, amount, assetName, limit, listener)
+        } else {
+            loadSendMoney(receivingAddr, issuingAddr, memo, amount, listener)
+        }
+    }
+
     fun doSendMoneyByAsset(
         receivingAddr: String,
         issuingAddr: CharArray,
@@ -91,7 +107,6 @@ object Horizon : HorizonTasks {
             }
         }
     }
-
 
     fun doSendMoney(
         destAddress: String,
