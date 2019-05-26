@@ -27,6 +27,10 @@ class MainActivity : AppCompatActivity() {
 
         onClickGetAccounts()
 
+        onClickSendMoney()
+    }
+
+    private fun onClickSendMoney() {
         btn_send_money.setOnClickListener {
             cst_result_send.visibility = View.GONE
             pb_three.visibility = View.VISIBLE
