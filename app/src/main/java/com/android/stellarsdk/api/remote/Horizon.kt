@@ -12,6 +12,7 @@ import org.stellar.sdk.responses.AccountResponse
 import org.stellar.sdk.responses.SubmitTransactionResponse
 import org.stellar.sdk.responses.operations.PaymentOperationResponse
 import shadow.okhttp3.OkHttpClient
+import java.io.IOException
 import java.util.concurrent.TimeUnit
 
 
@@ -121,8 +122,8 @@ object Horizon : HorizonTasks {
             })
 
             try {
-                Thread.currentThread().join()
-            } catch (e: InterruptedException) {
+                System.`in`.read()
+            } catch (e: IOException) {
                 e.message?.let {
                     listener.onError(it)
                 } ?: run {
