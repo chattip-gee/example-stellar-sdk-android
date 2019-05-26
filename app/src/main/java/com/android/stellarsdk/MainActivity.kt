@@ -7,6 +7,7 @@ import androidx.core.content.ContextCompat
 import com.android.stellarsdk.api.callback.OnResponse
 import com.android.stellarsdk.api.model.friendbot.FriendBotResponse
 import com.android.stellarsdk.api.remote.Horizon
+import com.android.stellarsdk.api.remote.ReceiverResponse
 import com.android.stellarsdk.api.restapi.ApiManager
 import kotlinx.android.synthetic.main.activity_main.*
 import org.stellar.sdk.KeyPair
@@ -29,8 +30,30 @@ class MainActivity : AppCompatActivity() {
 
         onClickSendMoney()
 
+        onClickReceiveMoney()
+    }
+
+    private fun onClickReceiveMoney() {
         btn_receive_money.setOnClickListener {
-            Horizon.doReceiveMoney(pair!!.accountId)
+            cst_result_receive.visibility = View.GONE
+            pb_four.visibility = View.VISIBLE
+            Horizon.doReceiveMoney(pair!!.accountId, object : OnResponse<ReceiverResponse> {
+                override fun onError(error: String) {
+                    pb_four.visibility = View.GONE
+                    tv_result_receive.text = error
+                    cst_result_receive.background =
+                        ContextCompat.getDrawable(this@MainActivity, R.drawable.result_fail_background)
+                    cst_result_receive.visibility = View.VISIBLE
+                }
+
+                override fun onSuccess(response: ReceiverResponse) {
+                    pb_four.visibility = View.GONE
+                    tv_result_receive.text = response.amount + " " + response.assetName + " from " + response.accountId
+                    cst_result_receive.background =
+                        ContextCompat.getDrawable(this@MainActivity, R.drawable.result_success_background)
+                    cst_result_receive.visibility = View.VISIBLE
+                }
+            })
         }
     }
 

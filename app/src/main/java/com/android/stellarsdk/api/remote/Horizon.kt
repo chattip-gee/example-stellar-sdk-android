@@ -3,7 +3,6 @@ package com.android.stellarsdk.api.remote
 import android.os.AsyncTask
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import com.android.stellarsdk.api.callback.OnResponse
 import org.stellar.sdk.*
 import org.stellar.sdk.KeyPair.fromAccountId
@@ -76,24 +75,23 @@ object Horizon : HorizonTasks {
                 error.message?.let {
                     listener.onError(it)
                 } ?: run {
-                    listener.onError("Transaction Failed")
+                    listener.onError("Something went wrong")
                 }
 
             }
         }
     }
 
-    fun doReceiveMoney(accountId: String) {
-        loadReceiveMoney(accountId)
+    fun doReceiveMoney(accountId: String, listener: OnResponse<ReceiverResponse>) {
+        loadReceiveMoney(accountId, listener)
     }
 
-    private fun loadReceiveMoney(accountId: String) {
+    private fun loadReceiveMoney(accountId: String, listener: OnResponse<ReceiverResponse>) {
         AsyncTask.execute {
             val server = getServer()
             val account = fromAccountId(accountId)
 
             val paymentsRequest = server.payments().forAccount(account)
-
 
             paymentsRequest.stream(EventListener { payment ->
                 if (payment is PaymentOperationResponse) {
@@ -104,8 +102,7 @@ object Horizon : HorizonTasks {
                     val amount = payment.amount
 
                     val asset = payment.asset
-                    val assetName: String
-                    assetName = if (asset == AssetTypeNative()) {
+                    val assetName = if (asset == AssetTypeNative()) {
                         "lumens"
                     } else {
                         val assetNameBuilder = StringBuilder()
@@ -115,38 +112,23 @@ object Horizon : HorizonTasks {
                         assetNameBuilder.toString()
                     }
 
-                    val output = StringBuilder()
-                    output.append(amount)
-                    output.append(" ")
-                    output.append(assetName)
-                    output.append(" from ")
-                    output.append(payment.from.accountId)
-                    Log.d("ComeHere 1 ", output.toString())
+                    val result = ReceiverResponse(amount, assetName, payment.from.accountId)
+
+                    Handler(Looper.getMainLooper()).post {
+                        listener.onSuccess(result)
+                    }
                 }
             })
 
-            /**
-             * option 1
-             *
-             */
-            /*try {
-            System.in.read();
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }*/
-
-            /**
-             * option 2
-             */
             try {
                 Thread.currentThread().join()
             } catch (e: InterruptedException) {
-                // TODO Auto-generated catch block
-                e.printStackTrace()
-                Log.d("ComeHere 2 ", e.message)
+                e.message?.let {
+                    listener.onError(it)
+                } ?: run {
+                    listener.onError("Something went wrong")
+                }
             }
-
         }
     }
 
@@ -166,7 +148,7 @@ object Horizon : HorizonTasks {
                 error.message?.let {
                     listener.onError(it)
                 } ?: run {
-                    listener.onError("fail to get account")
+                    listener.onError("Something went wrong")
                 }
 
             }
@@ -209,3 +191,5 @@ object Horizon : HorizonTasks {
         return server
     }
 }
+
+data class ReceiverResponse(val amount: String, val assetName: String, val accountId: String)
