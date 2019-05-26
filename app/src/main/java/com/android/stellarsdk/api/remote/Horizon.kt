@@ -66,7 +66,7 @@ object Horizon : HorizonTasks {
                 val transactionResponse = server.submitTransaction(transaction)
                 Handler(Looper.getMainLooper()).post {
                     if (transactionResponse.isSuccess) listener.onSuccess(transactionResponse)
-                    else listener.onError("Address identified for : " + sourceKeyPair.accountId)
+                    else listener.onError("Address identified for : " + destKeyPair.accountId)
                 }
 
             } catch (error: Exception) {

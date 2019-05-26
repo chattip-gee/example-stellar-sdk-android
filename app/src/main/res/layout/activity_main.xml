@@ -330,7 +330,7 @@
                     android:padding="10dp"
                     android:inputType="number"
                     android:enabled="false"
-                    android:textColor="@color/md_grey_600"
+                    android:textColor="@color/md_grey_800"
                     android:textSize="13sp"
                     android:text="GC3RDG2BYV6CM77X663K72G34EYHYJVDPD7SFXKKFLZOFQM3UJTW5NHG"/>
 

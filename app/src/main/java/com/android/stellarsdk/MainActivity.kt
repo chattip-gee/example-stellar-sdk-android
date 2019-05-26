@@ -20,7 +20,6 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        scv_page.scrollTo(0, 100)
 
         onClickGenerateKeyPair()
 
@@ -47,7 +46,7 @@ class MainActivity : AppCompatActivity() {
 
                     override fun onSuccess(response: SubmitTransactionResponse) {
                         pb_three.visibility = View.GONE
-                        tv_result_send.text = "Successfully!"
+                        tv_result_send.text = "SUCCESS! Has been sent account :)"
                         cst_result_send.background =
                             ContextCompat.getDrawable(this@MainActivity, R.drawable.result_success_background)
                         cst_result_send.visibility = View.VISIBLE
