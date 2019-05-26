@@ -38,16 +38,16 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setDestination() {
-        edt_send_destination.setText("GBDV7JYTKYZ3623PV63YYYOU34T6ICKL7GMMYGH2STU734RI3PJB6XM2")
+        edt_send_destination.setText("GDNY3IIPEKJTPGM7PS7OHXXYLMPGUHCTROL57P5IEDP276BB2LBKZAOH")
         select_others.setOnClickListener {
-            edt_send_destination.setText("SCYNHADZEENTICMPLFSDAA4HGHMGXZSCOLY7APBPUJBPYZWEA4YF4JL2")
+            edt_send_destination.setText("SCWL5EH762M5HQLCJXCIRB4ITSXOYQQPSXF5NUDVXH4TV4OSDRDJ7UYN")
             select_others.isChecked = true
             select_xlm.isChecked = false
             li_fill_others.visibility = View.VISIBLE
         }
 
         select_xlm.setOnClickListener {
-            edt_send_destination.setText("GBDV7JYTKYZ3623PV63YYYOU34T6ICKL7GMMYGH2STU734RI3PJB6XM2")
+            edt_send_destination.setText("GDNY3IIPEKJTPGM7PS7OHXXYLMPGUHCTROL57P5IEDP276BB2LBKZAOH")
             select_others.isChecked = false
             select_xlm.isChecked = true
             li_fill_others.visibility = View.GONE
@@ -93,7 +93,7 @@ class MainActivity : AppCompatActivity() {
                     if (!edt_send_memo.text.isNullOrEmpty() && !edt_send_amount.text.isNullOrEmpty() && !edt_asset_code.text.isNullOrEmpty() && !edt_limit.text.isNullOrEmpty()) {
                         pb_three.visibility = View.VISIBLE
                         Horizon.sendMoneyCustom(
-                            "SCYNHADZEENTICMPLFSDAA4HGHMGXZSCOLY7APBPUJBPYZWEA4YF4JL2",
+                            "SCWL5EH762M5HQLCJXCIRB4ITSXOYQQPSXF5NUDVXH4TV4OSDRDJ7UYN",
                             secretSeed,
                             edt_send_memo.text.toString(),
                             edt_send_amount.text.toString(),
@@ -126,7 +126,7 @@ class MainActivity : AppCompatActivity() {
                     if (!edt_send_memo.text.isNullOrEmpty() && !edt_send_amount.text.isNullOrEmpty()) {
                         pb_three.visibility = View.VISIBLE
                         Horizon.sendMoneyCustom(
-                            "GBDV7JYTKYZ3623PV63YYYOU34T6ICKL7GMMYGH2STU734RI3PJB6XM2",
+                            "GDNY3IIPEKJTPGM7PS7OHXXYLMPGUHCTROL57P5IEDP276BB2LBKZAOH",
                             secretSeed,
                             edt_send_memo.text.toString(),
                             edt_send_amount.text.toString(),
