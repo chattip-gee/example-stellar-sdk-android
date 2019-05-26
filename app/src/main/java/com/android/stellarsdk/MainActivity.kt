@@ -2,6 +2,7 @@ package com.android.stellarsdk
 
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.android.stellarsdk.api.callback.OnResponse
@@ -55,136 +56,167 @@ class MainActivity : AppCompatActivity() {
 
     private fun onClickReceiveMoney() {
         btn_receive_money.setOnClickListener {
-            cst_result_receive.visibility = View.GONE
-            pb_four.visibility = View.VISIBLE
-            Horizon.doReceiveMoney(pair!!.accountId, object : OnResponse<ReceiverResponse> {
-                override fun onError(error: String) {
-                    pb_four.visibility = View.GONE
-                    tv_result_receive.text = error
-                    cst_result_receive.background =
-                        ContextCompat.getDrawable(this@MainActivity, R.drawable.result_fail_background)
-                    cst_result_receive.visibility = View.VISIBLE
-                }
+            if (pair == null) Toast.makeText(applicationContext, "You don't have account", Toast.LENGTH_LONG).show()
 
-                override fun onSuccess(response: ReceiverResponse) {
-                    pb_four.visibility = View.GONE
-                    tv_result_receive.text = response.amount + " " + response.assetName + " from " + response.accountId
-                    cst_result_receive.background =
-                        ContextCompat.getDrawable(this@MainActivity, R.drawable.result_success_background)
-                    cst_result_receive.visibility = View.VISIBLE
-                }
-            })
+            pair?.apply {
+                cst_result_receive.visibility = View.GONE
+                pb_four.visibility = View.VISIBLE
+                Horizon.doReceiveMoney(accountId, object : OnResponse<ReceiverResponse> {
+                    override fun onError(error: String) {
+                        pb_four.visibility = View.GONE
+                        tv_result_receive.text = error
+                        cst_result_receive.background =
+                            ContextCompat.getDrawable(this@MainActivity, R.drawable.result_fail_background)
+                        cst_result_receive.visibility = View.VISIBLE
+                    }
+
+                    override fun onSuccess(response: ReceiverResponse) {
+                        pb_four.visibility = View.GONE
+                        tv_result_receive.text =
+                            response.amount + " " + response.assetName + " from " + response.accountId
+                        cst_result_receive.background =
+                            ContextCompat.getDrawable(this@MainActivity, R.drawable.result_success_background)
+                        cst_result_receive.visibility = View.VISIBLE
+                    }
+                })
+            }
         }
     }
 
     private fun onClickSendMoney() {
         btn_send_money.setOnClickListener {
-            cst_result_send.visibility = View.GONE
-            pb_three.visibility = View.VISIBLE
-            if (select_others.isChecked) {
-                Horizon.sendMoneyCustom(
-                    "SCYNHADZEENTICMPLFSDAA4HGHMGXZSCOLY7APBPUJBPYZWEA4YF4JL2",
-                    pair!!.secretSeed,
-                    edt_send_memo.text.toString(),
-                    edt_send_amount.text.toString(),
-                    edt_asset_code.text.toString(),
-                    edt_limit.text.toString(),
-                    object : OnResponse<SubmitTransactionResponse> {
-                        override fun onError(error: String) {
-                            pb_three.visibility = View.GONE
-                            tv_result_send.text = error
-                            cst_result_send.background =
-                                ContextCompat.getDrawable(this@MainActivity, R.drawable.result_fail_background)
-                            cst_result_send.visibility = View.VISIBLE
-                        }
+            if (pair == null) Toast.makeText(applicationContext, "You don't have account", Toast.LENGTH_LONG).show()
 
-                        override fun onSuccess(response: SubmitTransactionResponse) {
-                            pb_three.visibility = View.GONE
-                            tv_result_send.text = "SUCCESS! Has been sent account :)"
-                            cst_result_send.background =
-                                ContextCompat.getDrawable(this@MainActivity, R.drawable.result_success_background)
-                            cst_result_send.visibility = View.VISIBLE
-                        }
-                    })
-            } else {
-                Horizon.sendMoneyCustom(
-                    "GBDV7JYTKYZ3623PV63YYYOU34T6ICKL7GMMYGH2STU734RI3PJB6XM2",
-                    pair!!.secretSeed,
-                    edt_send_memo.text.toString(),
-                    edt_send_amount.text.toString(),
-                    null,
-                    null,
-                    object : OnResponse<SubmitTransactionResponse> {
-                        override fun onError(error: String) {
-                            pb_three.visibility = View.GONE
-                            tv_result_send.text = error
-                            cst_result_send.background =
-                                ContextCompat.getDrawable(this@MainActivity, R.drawable.result_fail_background)
-                            cst_result_send.visibility = View.VISIBLE
-                        }
+            pair?.apply {
+                cst_transaction_receive.visibility = View.VISIBLE
+                cst_result_send.visibility = View.GONE
+                if (select_others.isChecked) {
+                    if (!edt_send_memo.text.isNullOrEmpty() && !edt_send_amount.text.isNullOrEmpty() && !edt_asset_code.text.isNullOrEmpty() && !edt_limit.text.isNullOrEmpty()) {
+                        pb_three.visibility = View.VISIBLE
+                        Horizon.sendMoneyCustom(
+                            "SCYNHADZEENTICMPLFSDAA4HGHMGXZSCOLY7APBPUJBPYZWEA4YF4JL2",
+                            secretSeed,
+                            edt_send_memo.text.toString(),
+                            edt_send_amount.text.toString(),
+                            edt_asset_code.text.toString(),
+                            edt_limit.text.toString(),
+                            object : OnResponse<SubmitTransactionResponse> {
+                                override fun onError(error: String) {
+                                    pb_three.visibility = View.GONE
+                                    tv_result_send.text = error
+                                    cst_result_send.background =
+                                        ContextCompat.getDrawable(this@MainActivity, R.drawable.result_fail_background)
+                                    cst_result_send.visibility = View.VISIBLE
+                                }
 
-                        override fun onSuccess(response: SubmitTransactionResponse) {
-                            pb_three.visibility = View.GONE
-                            tv_result_send.text = "SUCCESS! Has been sent account :)"
-                            cst_result_send.background =
-                                ContextCompat.getDrawable(this@MainActivity, R.drawable.result_success_background)
-                            cst_result_send.visibility = View.VISIBLE
-                        }
-                    })
+                                override fun onSuccess(response: SubmitTransactionResponse) {
+                                    pb_three.visibility = View.GONE
+                                    tv_result_send.text = "SUCCESS! Has been sent account :)"
+                                    cst_result_send.background =
+                                        ContextCompat.getDrawable(
+                                            this@MainActivity,
+                                            R.drawable.result_success_background
+                                        )
+                                    cst_result_send.visibility = View.VISIBLE
+                                }
+                            })
+                    } else Toast.makeText(applicationContext, "Please fill up this form.", Toast.LENGTH_LONG).show()
+                } else {
+                    if (!edt_send_memo.text.isNullOrEmpty() && !edt_send_amount.text.isNullOrEmpty()) {
+                        pb_three.visibility = View.VISIBLE
+                        Horizon.sendMoneyCustom(
+                            "GBDV7JYTKYZ3623PV63YYYOU34T6ICKL7GMMYGH2STU734RI3PJB6XM2",
+                            secretSeed,
+                            edt_send_memo.text.toString(),
+                            edt_send_amount.text.toString(),
+                            null,
+                            null,
+                            object : OnResponse<SubmitTransactionResponse> {
+                                override fun onError(error: String) {
+                                    pb_three.visibility = View.GONE
+                                    tv_result_send.text = error
+                                    cst_result_send.background =
+                                        ContextCompat.getDrawable(this@MainActivity, R.drawable.result_fail_background)
+                                    cst_result_send.visibility = View.VISIBLE
+                                }
+
+                                override fun onSuccess(response: SubmitTransactionResponse) {
+                                    pb_three.visibility = View.GONE
+                                    tv_result_send.text = "SUCCESS! Has been sent account :)"
+                                    cst_result_send.background =
+                                        ContextCompat.getDrawable(
+                                            this@MainActivity,
+                                            R.drawable.result_success_background
+                                        )
+                                    cst_result_send.visibility = View.VISIBLE
+                                }
+                            })
+                    } else Toast.makeText(applicationContext, "Please fill up this form.", Toast.LENGTH_LONG).show()
+                }
             }
         }
     }
 
     private fun onClickGetAccounts() {
         btn_get_account.setOnClickListener {
-            cst_account_detail.visibility = View.GONE
-            pb_two.visibility = View.VISIBLE
-            tv_account_detail_id.text = "Balances for account \n" + pair?.accountId
+            if (pair == null) Toast.makeText(applicationContext, "You don't have account", Toast.LENGTH_LONG).show()
 
-            Horizon.getBalance(pair!!, object : OnResponse<org.stellar.sdk.responses.AccountResponse> {
-                override fun onError(error: String) {
-                    pb_two.visibility = View.GONE
-                    tv_account_detail.text = error
-                    cst_account_detail.background =
-                        ContextCompat.getDrawable(this@MainActivity, R.drawable.result_fail_background)
-                    cst_account_detail.visibility = View.VISIBLE
-                }
+            pair?.apply {
+                cst_account_detail.visibility = View.GONE
+                pb_two.visibility = View.VISIBLE
+                tv_account_detail_id.text = "Balances for account \n$accountId"
 
-                override fun onSuccess(response: org.stellar.sdk.responses.AccountResponse) {
-                    for (balance in response.balances) {
+                Horizon.getBalance(this, object : OnResponse<org.stellar.sdk.responses.AccountResponse> {
+                    override fun onError(error: String) {
                         pb_two.visibility = View.GONE
-                        tv_account_detail.text =
-                            String.format("Type: %s, Balance: %s", balance.assetType, balance.balance)
+                        tv_account_detail.text = error
                         cst_account_detail.background =
-                            ContextCompat.getDrawable(this@MainActivity, R.drawable.result_success_background)
+                            ContextCompat.getDrawable(this@MainActivity, R.drawable.result_fail_background)
                         cst_account_detail.visibility = View.VISIBLE
                     }
-                }
-            })
+
+                    override fun onSuccess(response: org.stellar.sdk.responses.AccountResponse) {
+                        for (balance in response.balances) {
+                            pb_two.visibility = View.GONE
+                            tv_account_detail.text =
+                                String.format("Type: %s, Balance: %s", balance.assetType, balance.balance)
+                            cst_account_detail.background =
+                                ContextCompat.getDrawable(this@MainActivity, R.drawable.result_success_background)
+                            cst_account_detail.visibility = View.VISIBLE
+                        }
+                    }
+                })
+            }
         }
     }
 
     private fun onClickGetFriendbot() {
         btn_get_test_network_lumens.setOnClickListener {
-            cst_result_friendbot.visibility = View.GONE
-            pb_one.visibility = View.VISIBLE
-            ApiManager().getFriendBot(pair?.accountId, object : OnResponse<FriendBotResponse> {
-                override fun onError(error: String) {
-                    pb_one.visibility = View.GONE
-                    tv_result_friend_bot.text = error
-                    cst_result_friendbot.background =
-                        ContextCompat.getDrawable(this@MainActivity, R.drawable.result_fail_background)
-                    cst_result_friendbot.visibility = View.VISIBLE
-                }
+            if (pair == null) Toast.makeText(applicationContext, "Please generate KeyPair", Toast.LENGTH_LONG).show()
 
-                override fun onSuccess(response: FriendBotResponse) {
-                    pb_one.visibility = View.GONE
-                    tv_result_friend_bot.text = "SUCCESS! You have a new account :)"
-                    cst_result_friendbot.background =
-                        ContextCompat.getDrawable(this@MainActivity, R.drawable.result_success_background)
-                    cst_result_friendbot.visibility = View.VISIBLE
-                }
-            })
+            pair?.apply {
+                cst_result_friendbot.visibility = View.GONE
+                pb_one.visibility = View.VISIBLE
+                ApiManager().getFriendBot(accountId, object : OnResponse<FriendBotResponse> {
+                    override fun onError(error: String) {
+                        pb_one.visibility = View.GONE
+                        tv_result_friend_bot.text = error
+                        cst_result_friendbot.background =
+                            ContextCompat.getDrawable(this@MainActivity, R.drawable.result_fail_background)
+                        cst_result_friendbot.visibility = View.VISIBLE
+                        cst_transaction.visibility = View.GONE
+                    }
+
+                    override fun onSuccess(response: FriendBotResponse) {
+                        pb_one.visibility = View.GONE
+                        tv_result_friend_bot.text = "SUCCESS! You have a new account :)"
+                        cst_result_friendbot.background =
+                            ContextCompat.getDrawable(this@MainActivity, R.drawable.result_success_background)
+                        cst_result_friendbot.visibility = View.VISIBLE
+                        cst_transaction.visibility = View.VISIBLE
+                    }
+                })
+            }
         }
     }
 
@@ -192,10 +224,12 @@ class MainActivity : AppCompatActivity() {
         btn_generate_keypair.setOnClickListener {
             val keyPair = KeyPair.random()
             pair = keyPair
-
-            tv_public_key_id.text = pair!!.accountId
-            tv_secret_key_id.text = String(pair!!.secretSeed)
-            tv_account_id.text = pair!!.accountId
+            if (pair == null) Toast.makeText(applicationContext, "Something went wrong", Toast.LENGTH_LONG).show()
+            pair?.apply {
+                tv_public_key_id.text = accountId
+                tv_secret_key_id.text = String(secretSeed)
+                tv_account_id.text = accountId
+            }
         }
     }
 
