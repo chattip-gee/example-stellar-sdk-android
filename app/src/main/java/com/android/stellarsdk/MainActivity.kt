@@ -2,6 +2,7 @@ package com.android.stellarsdk
 
 import android.os.Bundle
 import android.view.View
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -10,6 +11,8 @@ import com.android.stellarsdk.api.model.friendbot.FriendBotResponse
 import com.android.stellarsdk.api.remote.Horizon
 import com.android.stellarsdk.api.remote.ReceiverResponse
 import com.android.stellarsdk.api.restapi.ApiManager
+import com.google.zxing.BarcodeFormat
+import com.journeyapps.barcodescanner.BarcodeEncoder
 import kotlinx.android.synthetic.main.activity_main.*
 import org.stellar.sdk.KeyPair
 import org.stellar.sdk.responses.SubmitTransactionResponse
@@ -38,16 +41,13 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setDestination() {
-        edt_send_destination.setText("GDNY3IIPEKJTPGM7PS7OHXXYLMPGUHCTROL57P5IEDP276BB2LBKZAOH")
         select_others.setOnClickListener {
-            edt_send_destination.setText("SCWL5EH762M5HQLCJXCIRB4ITSXOYQQPSXF5NUDVXH4TV4OSDRDJ7UYN")
             select_others.isChecked = true
             select_xlm.isChecked = false
             li_fill_others.visibility = View.VISIBLE
         }
 
         select_xlm.setOnClickListener {
-            edt_send_destination.setText("GDNY3IIPEKJTPGM7PS7OHXXYLMPGUHCTROL57P5IEDP276BB2LBKZAOH")
             select_others.isChecked = false
             select_xlm.isChecked = true
             li_fill_others.visibility = View.GONE
@@ -90,10 +90,10 @@ class MainActivity : AppCompatActivity() {
             pair?.apply {
                 cst_result_send.visibility = View.GONE
                 if (select_others.isChecked) {
-                    if (!edt_send_memo.text.isNullOrEmpty() && !edt_send_amount.text.isNullOrEmpty() && !edt_asset_code.text.isNullOrEmpty() && !edt_limit.text.isNullOrEmpty()) {
+                    if (!edt_send_destination.text.isNullOrEmpty() && !edt_send_memo.text.isNullOrEmpty() && !edt_send_amount.text.isNullOrEmpty() && !edt_asset_code.text.isNullOrEmpty() && !edt_limit.text.isNullOrEmpty()) {
                         pb_three.visibility = View.VISIBLE
                         Horizon.sendMoneyCustom(
-                            "SCWL5EH762M5HQLCJXCIRB4ITSXOYQQPSXF5NUDVXH4TV4OSDRDJ7UYN",
+                            edt_send_destination.text.toString(),
                             secretSeed,
                             edt_send_memo.text.toString(),
                             edt_send_amount.text.toString(),
@@ -123,10 +123,10 @@ class MainActivity : AppCompatActivity() {
                             })
                     } else Toast.makeText(applicationContext, "Please fill up this form.", Toast.LENGTH_LONG).show()
                 } else {
-                    if (!edt_send_memo.text.isNullOrEmpty() && !edt_send_amount.text.isNullOrEmpty()) {
+                    if (!edt_send_destination.text.isNullOrEmpty() && !edt_send_memo.text.isNullOrEmpty() && !edt_send_amount.text.isNullOrEmpty()) {
                         pb_three.visibility = View.VISIBLE
                         Horizon.sendMoneyCustom(
-                            "GDNY3IIPEKJTPGM7PS7OHXXYLMPGUHCTROL57P5IEDP276BB2LBKZAOH",
+                            edt_send_destination.text.toString(),
                             secretSeed,
                             edt_send_memo.text.toString(),
                             edt_send_amount.text.toString(),
@@ -229,11 +229,19 @@ class MainActivity : AppCompatActivity() {
             pair = keyPair
             if (pair == null) Toast.makeText(applicationContext, "Something went wrong", Toast.LENGTH_LONG).show()
             pair?.apply {
+                generateQRCode(accountId, img_qrcode, 500)
                 tv_public_key_id.text = accountId
                 tv_secret_key_id.text = String(secretSeed)
                 tv_account_id.text = accountId
             }
         }
+    }
+
+    private fun generateQRCode(data: String, imageView: ImageView, size: Int) {
+        val barcodeEncoder = BarcodeEncoder()
+        val bitmap = barcodeEncoder.encodeBitmap(data, BarcodeFormat.QR_CODE, size, size)
+        imageView.setImageBitmap(bitmap)
+        imageView.visibility = View.VISIBLE
     }
 
 }

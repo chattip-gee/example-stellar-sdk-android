@@ -71,6 +71,15 @@
                 app:layout_constraintStart_toStartOf="@+id/btn_generate_keypair"
                 app:layout_constraintTop_toBottomOf="@+id/btn_generate_keypair">
 
+            <ImageView
+                    android:id="@+id/img_qrcode"
+                    android:layout_width="180dp"
+                    android:layout_height="180dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:visibility="gone"
+                    android:background="@color/md_white_1000"/>
+
             <TextView
                     android:id="@+id/tv_public_key"
                     android:layout_width="wrap_content"
@@ -79,8 +88,8 @@
                     android:textSize="12sp"
                     android:textStyle="bold"
                     android:text="Public Key : "
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"/>
+                    app:layout_constraintStart_toStartOf="@id/img_qrcode"
+                    app:layout_constraintTop_toBottomOf="@id/img_qrcode"/>
 
             <TextView
                     android:id="@+id/tv_public_key_id"
@@ -88,11 +97,11 @@
                     android:layout_height="wrap_content"
                     android:textColor="@android:color/black"
                     android:textSize="12sp"
+                    android:paddingStart="10dp"
+                    android:paddingEnd="6dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@id/tv_public_key"
                     app:layout_constraintTop_toTopOf="@id/tv_public_key"
-                    android:paddingStart="10dp"
-                    android:paddingEnd="0dp"
                     android:hint="GATEP5ZLIXU4QDCRBY3KG5VRXWHIIN2LSY6RONUUP74P777C5LDRPCUI"/>
 
             <TextView
@@ -358,11 +367,10 @@
                         app:layout_constraintStart_toStartOf="@id/tv_send_destination"
                         app:layout_constraintEnd_toEndOf="parent"
                         android:padding="10dp"
-                        android:inputType="number"
-                        android:enabled="false"
+                        android:inputType="text"
                         android:textColor="@color/md_grey_800"
                         android:textSize="13sp"
-                        android:text="GBDV7JYTKYZ3623PV63YYYOU34T6ICKL7GMMYGH2STU734RI3PJB6XM2"/>
+                        tools:text="GBDV7JYTKYZ3623PV63YYYOU34T6ICKL7GMMYGH2STU734RI3PJB6XM2"/>
 
                 <TextView
                         android:id="@+id/tv_send_base_free"
