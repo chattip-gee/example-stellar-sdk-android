@@ -9,4 +9,5 @@ Reference: https://www.stellar.org/laboratory/
 4. Feature get account balance
 5. Feature send money
 6. Feature receive money
-7. Feature issuing-assets 
+7. Feature issuing-assets
+8. Feature Generate QR Code and Copy Clipboard
