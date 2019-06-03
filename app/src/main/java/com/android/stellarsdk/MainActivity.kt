@@ -1,5 +1,8 @@
 package com.android.stellarsdk
 
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
 import android.os.Bundle
 import android.view.View
 import android.widget.ImageView
@@ -38,6 +41,7 @@ class MainActivity : AppCompatActivity() {
         onClickReceiveMoney()
 
         setDestination()
+
     }
 
     private fun setDestination() {
@@ -66,16 +70,16 @@ class MainActivity : AppCompatActivity() {
                         pb_four.visibility = View.GONE
                         tv_result_receive.text = error
                         cst_result_receive.background =
-                            ContextCompat.getDrawable(this@MainActivity, R.drawable.result_fail_background)
+                                ContextCompat.getDrawable(this@MainActivity, R.drawable.result_fail_background)
                         cst_result_receive.visibility = View.VISIBLE
                     }
 
                     override fun onSuccess(response: ReceiverResponse) {
                         pb_four.visibility = View.GONE
                         tv_result_receive.text =
-                            response.amount + " " + response.assetName + " from " + response.accountId
+                                response.amount + " " + response.assetName + " from " + response.accountId
                         cst_result_receive.background =
-                            ContextCompat.getDrawable(this@MainActivity, R.drawable.result_success_background)
+                                ContextCompat.getDrawable(this@MainActivity, R.drawable.result_success_background)
                         cst_result_receive.visibility = View.VISIBLE
                     }
                 })
@@ -93,67 +97,67 @@ class MainActivity : AppCompatActivity() {
                     if (!edt_send_destination.text.isNullOrEmpty() && !edt_send_memo.text.isNullOrEmpty() && !edt_send_amount.text.isNullOrEmpty() && !edt_asset_code.text.isNullOrEmpty() && !edt_limit.text.isNullOrEmpty()) {
                         pb_three.visibility = View.VISIBLE
                         Horizon.sendMoneyCustom(
-                            edt_send_destination.text.toString(),
-                            secretSeed,
-                            edt_send_memo.text.toString(),
-                            edt_send_amount.text.toString(),
-                            edt_asset_code.text.toString(),
-                            edt_limit.text.toString(),
-                            object : OnResponse<SubmitTransactionResponse> {
-                                override fun onError(error: String) {
-                                    pb_three.visibility = View.GONE
-                                    tv_result_send.text = error
-                                    cst_result_send.background =
-                                        ContextCompat.getDrawable(this@MainActivity, R.drawable.result_fail_background)
-                                    cst_result_send.visibility = View.VISIBLE
-                                    cst_transaction_receive.visibility = View.GONE
-                                }
+                                edt_send_destination.text.toString(),
+                                secretSeed,
+                                edt_send_memo.text.toString(),
+                                edt_send_amount.text.toString(),
+                                edt_asset_code.text.toString(),
+                                edt_limit.text.toString(),
+                                object : OnResponse<SubmitTransactionResponse> {
+                                    override fun onError(error: String) {
+                                        pb_three.visibility = View.GONE
+                                        tv_result_send.text = error
+                                        cst_result_send.background =
+                                                ContextCompat.getDrawable(this@MainActivity, R.drawable.result_fail_background)
+                                        cst_result_send.visibility = View.VISIBLE
+                                        cst_transaction_receive.visibility = View.GONE
+                                    }
 
-                                override fun onSuccess(response: SubmitTransactionResponse) {
-                                    pb_three.visibility = View.GONE
-                                    tv_result_send.text = "SUCCESS! Has been sent account :)"
-                                    cst_result_send.background =
-                                        ContextCompat.getDrawable(
-                                            this@MainActivity,
-                                            R.drawable.result_success_background
-                                        )
-                                    cst_result_send.visibility = View.VISIBLE
-                                    cst_transaction_receive.visibility = View.VISIBLE
-                                }
-                            })
+                                    override fun onSuccess(response: SubmitTransactionResponse) {
+                                        pb_three.visibility = View.GONE
+                                        tv_result_send.text = "SUCCESS! Has been sent account :)"
+                                        cst_result_send.background =
+                                                ContextCompat.getDrawable(
+                                                        this@MainActivity,
+                                                        R.drawable.result_success_background
+                                                )
+                                        cst_result_send.visibility = View.VISIBLE
+                                        cst_transaction_receive.visibility = View.VISIBLE
+                                    }
+                                })
                     } else Toast.makeText(applicationContext, "Please fill up this form.", Toast.LENGTH_LONG).show()
                 } else {
                     if (!edt_send_destination.text.isNullOrEmpty() && !edt_send_memo.text.isNullOrEmpty() && !edt_send_amount.text.isNullOrEmpty()) {
                         pb_three.visibility = View.VISIBLE
                         Horizon.sendMoneyCustom(
-                            edt_send_destination.text.toString(),
-                            secretSeed,
-                            edt_send_memo.text.toString(),
-                            edt_send_amount.text.toString(),
-                            null,
-                            null,
-                            object : OnResponse<SubmitTransactionResponse> {
-                                override fun onError(error: String) {
-                                    pb_three.visibility = View.GONE
-                                    tv_result_send.text = error
-                                    cst_result_send.background =
-                                        ContextCompat.getDrawable(this@MainActivity, R.drawable.result_fail_background)
-                                    cst_result_send.visibility = View.VISIBLE
-                                    cst_transaction_receive.visibility = View.GONE
-                                }
+                                edt_send_destination.text.toString(),
+                                secretSeed,
+                                edt_send_memo.text.toString(),
+                                edt_send_amount.text.toString(),
+                                null,
+                                null,
+                                object : OnResponse<SubmitTransactionResponse> {
+                                    override fun onError(error: String) {
+                                        pb_three.visibility = View.GONE
+                                        tv_result_send.text = error
+                                        cst_result_send.background =
+                                                ContextCompat.getDrawable(this@MainActivity, R.drawable.result_fail_background)
+                                        cst_result_send.visibility = View.VISIBLE
+                                        cst_transaction_receive.visibility = View.GONE
+                                    }
 
-                                override fun onSuccess(response: SubmitTransactionResponse) {
-                                    pb_three.visibility = View.GONE
-                                    tv_result_send.text = "SUCCESS! Has been sent account :)"
-                                    cst_result_send.background =
-                                        ContextCompat.getDrawable(
-                                            this@MainActivity,
-                                            R.drawable.result_success_background
-                                        )
-                                    cst_result_send.visibility = View.VISIBLE
-                                    cst_transaction_receive.visibility = View.VISIBLE
-                                }
-                            })
+                                    override fun onSuccess(response: SubmitTransactionResponse) {
+                                        pb_three.visibility = View.GONE
+                                        tv_result_send.text = "SUCCESS! Has been sent account :)"
+                                        cst_result_send.background =
+                                                ContextCompat.getDrawable(
+                                                        this@MainActivity,
+                                                        R.drawable.result_success_background
+                                                )
+                                        cst_result_send.visibility = View.VISIBLE
+                                        cst_transaction_receive.visibility = View.VISIBLE
+                                    }
+                                })
                     } else Toast.makeText(applicationContext, "Please fill up this form.", Toast.LENGTH_LONG).show()
                 }
             }
@@ -174,7 +178,7 @@ class MainActivity : AppCompatActivity() {
                         pb_two.visibility = View.GONE
                         tv_account_detail.text = error
                         cst_account_detail.background =
-                            ContextCompat.getDrawable(this@MainActivity, R.drawable.result_fail_background)
+                                ContextCompat.getDrawable(this@MainActivity, R.drawable.result_fail_background)
                         cst_account_detail.visibility = View.VISIBLE
                     }
 
@@ -182,9 +186,9 @@ class MainActivity : AppCompatActivity() {
                         for (balance in response.balances) {
                             pb_two.visibility = View.GONE
                             tv_account_detail.text =
-                                String.format("Type: %s, Balance: %s", balance.assetType, balance.balance)
+                                    String.format("Type: %s, Balance: %s", balance.assetType, balance.balance)
                             cst_account_detail.background =
-                                ContextCompat.getDrawable(this@MainActivity, R.drawable.result_success_background)
+                                    ContextCompat.getDrawable(this@MainActivity, R.drawable.result_success_background)
                             cst_account_detail.visibility = View.VISIBLE
                         }
                     }
@@ -205,7 +209,7 @@ class MainActivity : AppCompatActivity() {
                         pb_one.visibility = View.GONE
                         tv_result_friend_bot.text = error
                         cst_result_friendbot.background =
-                            ContextCompat.getDrawable(this@MainActivity, R.drawable.result_fail_background)
+                                ContextCompat.getDrawable(this@MainActivity, R.drawable.result_fail_background)
                         cst_result_friendbot.visibility = View.VISIBLE
                         cst_transaction.visibility = View.GONE
                     }
@@ -214,7 +218,7 @@ class MainActivity : AppCompatActivity() {
                         pb_one.visibility = View.GONE
                         tv_result_friend_bot.text = "SUCCESS! You have a new account :)"
                         cst_result_friendbot.background =
-                            ContextCompat.getDrawable(this@MainActivity, R.drawable.result_success_background)
+                                ContextCompat.getDrawable(this@MainActivity, R.drawable.result_success_background)
                         cst_result_friendbot.visibility = View.VISIBLE
                         cst_transaction.visibility = View.VISIBLE
                     }
@@ -230,9 +234,15 @@ class MainActivity : AppCompatActivity() {
             if (pair == null) Toast.makeText(applicationContext, "Something went wrong", Toast.LENGTH_LONG).show()
             pair?.apply {
                 generateQRCode(accountId, img_qrcode, 500)
+                tv_copy_public_key_id.visibility = View.VISIBLE
+                tv_copy_secret_key_id.visibility = View.VISIBLE
+
                 tv_public_key_id.text = accountId
                 tv_secret_key_id.text = String(secretSeed)
                 tv_account_id.text = accountId
+
+                tv_copy_public_key_id.setOnClickListener { copyAddressToClipBoard(accountId) }
+                tv_copy_secret_key_id.setOnClickListener { copyAddressToClipBoard(String(secretSeed)) }
             }
         }
     }
@@ -242,6 +252,14 @@ class MainActivity : AppCompatActivity() {
         val bitmap = barcodeEncoder.encodeBitmap(data, BarcodeFormat.QR_CODE, size, size)
         imageView.setImageBitmap(bitmap)
         imageView.visibility = View.VISIBLE
+    }
+
+    private fun copyAddressToClipBoard(data: String) {
+        val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        val clip = ClipData.newPlainText("BlockEQ Address", data)
+        clipboard.primaryClip = clip
+
+        Toast.makeText(this, "Address copied", Toast.LENGTH_LONG).show()
     }
 
 }
