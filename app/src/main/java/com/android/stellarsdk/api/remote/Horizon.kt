@@ -63,23 +63,25 @@ object Horizon : HorizonTasks {
         AsyncTask.execute {
             val server = getServer()
             val issuingKeys = KeyPair.fromSecretSeed(issuingAddr)
-            val receivingKeys = KeyPair.fromSecretSeed(receivingAddr)
+
+            val publicReceivingKeys = fromAccountId("GAVVWFZ5L5FT5FMY5OXMLX3PGD4REJFUIHPXFPSKKNYHT36CU7BRHJT5")
+            val secretReceivingKeys = KeyPair.fromSecretSeed("SBSNXDR3YV2S5QVB25ABYISKDNADI6X3Z23FY7M4RR5W64HEXP5MJJ22")
 
             val asset = createNonNativeAsset(assetName, issuingKeys)
-            val receiving = server.accounts().account(receivingKeys)
+            val receiving = server.accounts().account(secretReceivingKeys)
             val allowAsset = Transaction.Builder(receiving)
                 .setTimeout(TIMEOUT_INFINITE)
                 .setOperationFee(100)
                 .addOperation(ChangeTrustOperation.Builder(asset, limit).build())
                 .build()
-            allowAsset.sign(receivingKeys)
+            allowAsset.sign(secretReceivingKeys)
             server.submitTransaction(allowAsset)
 
             val issuing = server.accounts().account(issuingKeys)
             val sendAsset = Transaction.Builder(issuing)
                 .setTimeout(TIMEOUT_INFINITE)
                 .setOperationFee(100)
-                .addOperation(PaymentOperation.Builder(receivingKeys, asset, amount).build())
+                .addOperation(PaymentOperation.Builder(publicReceivingKeys, asset, amount).build())
                 .addMemo(Memo.text(memo))
                 .build()
             sendAsset.sign(issuingKeys)
@@ -88,7 +90,7 @@ object Horizon : HorizonTasks {
                 val transactionResponse = server.submitTransaction(sendAsset)
                 Handler(Looper.getMainLooper()).post {
                     if (transactionResponse.isSuccess) listener.onSuccess(transactionResponse)
-                    else listener.onError("Address identified for : ${receivingKeys.accountId}")
+                    else listener.onError("Address identified for : ${publicReceivingKeys.accountId}")
                 }
 
             } catch (error: Exception) {
