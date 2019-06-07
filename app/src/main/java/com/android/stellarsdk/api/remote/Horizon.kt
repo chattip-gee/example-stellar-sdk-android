@@ -20,6 +20,7 @@ import java.util.concurrent.TimeUnit
 object Horizon : HorizonTasks {
     //TODO REFACTOR
     private lateinit var HORIZON_SERVER: Server
+
     override fun init(server: ServerType) {
         var serverAddress = ""
         when (server) {
@@ -35,97 +36,71 @@ object Horizon : HorizonTasks {
         HORIZON_SERVER = createServer(serverAddress)
     }
 
-    fun sendMoneyCustom(
-        receivingAddr: String,
-        issuingAddr: CharArray,
-        memo: String,
-        amount: String,
-        assetName: String?,
-        limit: String?,
-        listener: OnResponse<SubmitTransactionResponse>
-    ) {
-        if (assetName != null && limit != null) {
-            loadSendMoneyByAsset(receivingAddr, issuingAddr, memo, amount, assetName, limit, listener)
-        } else {
-            loadSendMoney(receivingAddr, issuingAddr, memo, amount, listener)
-        }
+    fun sendMoney(transactionItem: TransactionItem, listener: OnResponse<SubmitTransactionResponse>) {
+        loadSendMoney(transactionItem, listener)
     }
 
-    private fun loadSendMoneyByAsset(
-        receivingAddr: String,
-        issuingAddr: CharArray,
-        memo: String,
-        amount: String,
-        assetName: String,
-        limit: String,
-        listener: OnResponse<SubmitTransactionResponse>
-    ) {
+    fun addAsset(addAssetItem: AddAssetItem, listener: OnResponse<SubmitTransactionResponse>) {
+        signAsset(addAssetItem, listener)
+    }
+
+    private fun signAsset(addAssetItem: AddAssetItem, listener: OnResponse<SubmitTransactionResponse>) {
         AsyncTask.execute {
             val server = getServer()
-            val issuingKeys = KeyPair.fromSecretSeed(issuingAddr)
+            val issuer = KeyPair.fromSecretSeed(addAssetItem.secretKey)
+            val secretReceiver = KeyPair.fromSecretSeed("SBSNXDR3YV2S5QVB25ABYISKDNADI6X3Z23FY7M4RR5W64HEXP5MJJ22")
+            val asset = createNonNativeAsset(addAssetItem.assetName, issuer)
 
-            val publicReceivingKeys = fromAccountId("GAVVWFZ5L5FT5FMY5OXMLX3PGD4REJFUIHPXFPSKKNYHT36CU7BRHJT5")
-            val secretReceivingKeys = KeyPair.fromSecretSeed("SBSNXDR3YV2S5QVB25ABYISKDNADI6X3Z23FY7M4RR5W64HEXP5MJJ22")
-
-            val asset = createNonNativeAsset(assetName, issuingKeys)
-            val receiving = server.accounts().account(secretReceivingKeys)
-            val allowAsset = Transaction.Builder(receiving)
-                .setTimeout(TIMEOUT_INFINITE)
-                .setOperationFee(100)
-                .addOperation(ChangeTrustOperation.Builder(asset, limit).build())
-                .build()
-            allowAsset.sign(secretReceivingKeys)
-            server.submitTransaction(allowAsset)
-
-            val issuing = server.accounts().account(issuingKeys)
-            val sendAsset = Transaction.Builder(issuing)
-                .setTimeout(TIMEOUT_INFINITE)
-                .setOperationFee(100)
-                .addOperation(PaymentOperation.Builder(publicReceivingKeys, asset, amount).build())
-                .addMemo(Memo.text(memo))
-                .build()
-            sendAsset.sign(issuingKeys)
+            val accountResponse = server.accounts().account(secretReceiver)
+            val allowAsset = Transaction.Builder(accountResponse)
+                    .setTimeout(TIMEOUT_INFINITE)
+                    .setOperationFee(100)
+                    .addOperation(ChangeTrustOperation.Builder(asset, addAssetItem.limit).build())
+                    .build()
+            allowAsset.sign(secretReceiver)
 
             try {
-                val transactionResponse = server.submitTransaction(sendAsset)
+                val assetResponse = server.submitTransaction(allowAsset)
                 Handler(Looper.getMainLooper()).post {
-                    if (transactionResponse.isSuccess) listener.onSuccess(transactionResponse)
-                    else listener.onError("Address identified for : ${publicReceivingKeys.accountId}")
+                    if (assetResponse.isSuccess) listener.onSuccess(assetResponse)
+                    else listener.onError("Identified for : ${addAssetItem.assetName}")
                 }
 
             } catch (error: Exception) {
-                error.message?.let { listener.onError(it) } ?: run { listener.onError("Something went wrong") }
+                error.message?.let { listener.onError(it) }
+                        ?: run { listener.onError("Something went wrong") }
             }
         }
     }
 
-    private fun loadSendMoney(
-        destAddress: String,
-        secretSeed: CharArray,
-        memo: String,
-        amount: String,
-        listener: OnResponse<SubmitTransactionResponse>
-    ) {
+    private fun loadSendMoney(transactionItem: TransactionItem, listener: OnResponse<SubmitTransactionResponse>) {
         AsyncTask.execute {
             val server = getServer()
-            val sourceKeyPair = KeyPair.fromSecretSeed(secretSeed)
-            val destKeyPair = fromAccountId(destAddress)
+            val issuer = KeyPair.fromSecretSeed(transactionItem.secretKey)
+            val destination = fromAccountId(transactionItem.destination)
 
-            val accountResponse = server.accounts().account(sourceKeyPair)
+            val accountResponse = server.accounts().account(issuer)
 
-            val transaction = Transaction.Builder(accountResponse)
-                .setTimeout(TIMEOUT_INFINITE)
-                .setOperationFee(100)
-                .addOperation(PaymentOperation.Builder(destKeyPair, AssetTypeNative(), amount).build())
-                .addMemo(Memo.text(memo))
-                .build()
-            transaction.sign(sourceKeyPair)
+            val transactionBuilder = Transaction.Builder(accountResponse).setTimeout(TIMEOUT_INFINITE)
+
+            if (transactionItem.assetName.isNullOrEmpty()) {
+                transactionBuilder.addOperation(PaymentOperation.Builder(destination, AssetTypeNative(), transactionItem.amount).build())
+            } else {
+                val asset = createNonNativeAsset(transactionItem.assetName, issuer)
+                transactionBuilder.addOperation(PaymentOperation.Builder(destination, asset, transactionItem.amount).build())
+            }
+
+            transactionBuilder.setOperationFee(100)
+            transactionBuilder.addMemo(Memo.text(transactionItem.memo))
+
+            val transaction = transactionBuilder.build()
+            transaction.sign(issuer)
 
             try {
                 val transactionResponse = server.submitTransaction(transaction)
                 Handler(Looper.getMainLooper()).post {
                     if (transactionResponse.isSuccess) listener.onSuccess(transactionResponse)
-                    else listener.onError("Address identified for : " + destKeyPair.accountId)
+                    else listener.onError("Address identified for : " + destination.accountId)
                 }
 
             } catch (error: Exception) {
@@ -220,8 +195,8 @@ object Horizon : HorizonTasks {
 
     private fun getServer(): Server {
         checkNotNull(
-            HORIZON_SERVER,
-            lazyMessage = { "Horizon server has not been initialized, please call {${this::class.java}#init(..)" })
+                HORIZON_SERVER,
+                lazyMessage = { "Horizon server has not been initialized, please call {${this::class.java}#init(..)" })
         return HORIZON_SERVER
     }
 
@@ -229,18 +204,18 @@ object Horizon : HorizonTasks {
         val server = Server(serverAddress)
 
         val httpClient = OkHttpClient.Builder()
-            .connectTimeout(10, TimeUnit.SECONDS)
-            .readTimeout(30, TimeUnit.SECONDS)
-            .retryOnConnectionFailure(true)
-            .addNetworkInterceptor(ShadowedStethoInterceptor())
-            .build()
+                .connectTimeout(10, TimeUnit.SECONDS)
+                .readTimeout(30, TimeUnit.SECONDS)
+                .retryOnConnectionFailure(true)
+                .addNetworkInterceptor(ShadowedStethoInterceptor())
+                .build()
 
         val submitHttpClient = OkHttpClient.Builder()
-            .connectTimeout(10, TimeUnit.SECONDS)
-            .readTimeout(HORIZON_SUBMIT_TIMEOUT + 5, TimeUnit.SECONDS)
-            .retryOnConnectionFailure(true)
-            .addNetworkInterceptor(ShadowedStethoInterceptor())
-            .build()
+                .connectTimeout(10, TimeUnit.SECONDS)
+                .readTimeout(HORIZON_SUBMIT_TIMEOUT + 5, TimeUnit.SECONDS)
+                .retryOnConnectionFailure(true)
+                .addNetworkInterceptor(ShadowedStethoInterceptor())
+                .build()
 
         server.httpClient = httpClient
         server.submitHttpClient = submitHttpClient
@@ -250,3 +225,21 @@ object Horizon : HorizonTasks {
 }
 
 data class ReceiverResponse(val amount: String, val assetName: String, val accountId: String)
+data class TransactionItem(val destination: String, val secretKey: CharArray, val memo: String, val amount: String, val assetName: String?) {
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as TransactionItem
+
+        if (!secretKey.contentEquals(other.secretKey)) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        return secretKey.contentHashCode()
+    }
+}
+
+class AddAssetItem(val secretKey: CharArray, val assetName: String, val limit: String)
