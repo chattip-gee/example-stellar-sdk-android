@@ -57,7 +57,12 @@ class MainActivity : AppCompatActivity() {
                     pb_five.visibility = View.VISIBLE
                     cst_result_add_asset.visibility = View.GONE
 
-                    val item = AddAssetItem(secretKey = secretSeed, assetName = edt_asset_code.text.toString(), limit = edt_limit.text.toString())
+                    val item = AddAssetItem(
+                        issuer = edt_add_asset_issuer.text.toString(),
+                        secretKey = secretSeed,
+                        assetName = edt_asset_code.text.toString(),
+                        limit = edt_limit.text.toString()
+                    )
                     Horizon.addAsset(item, object : OnResponse<SubmitTransactionResponse> {
                         override fun onError(error: String) {
                             pb_five.visibility = View.GONE
@@ -104,7 +109,7 @@ class MainActivity : AppCompatActivity() {
                         pb_four.visibility = View.GONE
                         tv_result_receive.text = error
                         cst_result_receive.background =
-                                ContextCompat.getDrawable(this@MainActivity, R.drawable.result_fail_background)
+                            ContextCompat.getDrawable(this@MainActivity, R.drawable.result_fail_background)
                         cst_result_receive.visibility = View.VISIBLE
                     }
 
@@ -112,7 +117,7 @@ class MainActivity : AppCompatActivity() {
                         pb_four.visibility = View.GONE
                         tv_result_receive.text = "${response.amount} ${response.assetName} from ${response.accountId}"
                         cst_result_receive.background =
-                                ContextCompat.getDrawable(this@MainActivity, R.drawable.result_success_background)
+                            ContextCompat.getDrawable(this@MainActivity, R.drawable.result_success_background)
                         cst_result_receive.visibility = View.VISIBLE
                     }
                 })
@@ -127,7 +132,13 @@ class MainActivity : AppCompatActivity() {
             pair?.apply {
                 cst_result_send.visibility = View.GONE
                 if (!edt_send_destination.text.isNullOrEmpty() && !edt_send_memo.text.isNullOrEmpty() && !edt_send_amount.text.isNullOrEmpty()) {
-                    val lumenTransaction = TransactionItem(destination = edt_send_destination.text.toString(), secretKey = secretSeed, memo = edt_send_memo.text.toString(), amount = edt_send_amount.text.toString(), assetName = null)
+                    val lumenTransaction = TransactionItem(
+                        destination = edt_send_destination.text.toString(),
+                        secretKey = secretSeed,
+                        memo = edt_send_memo.text.toString(),
+                        amount = edt_send_amount.text.toString(),
+                        assetName = null
+                    )
                     if (isNonNativeAsset()) {
                         val otherTransaction = lumenTransaction.copy(assetName = edt_asset_code.text.toString())
                         doSendMoney(otherTransaction)
@@ -141,7 +152,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun isNonNativeAsset(): Boolean {
-        return !(this.edt_asset_code.text.isNullOrEmpty() && edt_limit.text.isNullOrEmpty())
+        return !edt_asset_code.text.isNullOrEmpty() && !edt_limit.text.isNullOrEmpty()
     }
 
     private fun doSendMoney(item: TransactionItem) {
@@ -150,7 +161,8 @@ class MainActivity : AppCompatActivity() {
             override fun onError(error: String) {
                 pb_three.visibility = View.GONE
                 tv_result_send.text = error
-                cst_result_send.background = ContextCompat.getDrawable(this@MainActivity, R.drawable.result_fail_background)
+                cst_result_send.background =
+                    ContextCompat.getDrawable(this@MainActivity, R.drawable.result_fail_background)
                 cst_result_send.visibility = View.VISIBLE
                 cst_transaction_receive.visibility = View.GONE
             }
@@ -158,7 +170,8 @@ class MainActivity : AppCompatActivity() {
             override fun onSuccess(response: SubmitTransactionResponse) {
                 pb_three.visibility = View.GONE
                 tv_result_send.text = "SUCCESS! Has been sent account :)"
-                cst_result_send.background = ContextCompat.getDrawable(this@MainActivity, R.drawable.result_success_background)
+                cst_result_send.background =
+                    ContextCompat.getDrawable(this@MainActivity, R.drawable.result_success_background)
                 cst_result_send.visibility = View.VISIBLE
                 cst_transaction_receive.visibility = View.VISIBLE
             }
@@ -179,7 +192,7 @@ class MainActivity : AppCompatActivity() {
                         pb_two.visibility = View.GONE
                         tv_account_detail.text = error
                         cst_account_detail.background =
-                                ContextCompat.getDrawable(this@MainActivity, R.drawable.result_fail_background)
+                            ContextCompat.getDrawable(this@MainActivity, R.drawable.result_fail_background)
                         cst_account_detail.visibility = View.VISIBLE
                     }
 
@@ -187,9 +200,9 @@ class MainActivity : AppCompatActivity() {
                         for (balance in response.balances) {
                             pb_two.visibility = View.GONE
                             tv_account_detail.text =
-                                    String.format("Type: %s, Balance: %s", balance.assetType, balance.balance)
+                                String.format("Type: %s, Balance: %s", balance.assetType, balance.balance)
                             cst_account_detail.background =
-                                    ContextCompat.getDrawable(this@MainActivity, R.drawable.result_success_background)
+                                ContextCompat.getDrawable(this@MainActivity, R.drawable.result_success_background)
                             cst_account_detail.visibility = View.VISIBLE
                         }
                     }
@@ -210,7 +223,7 @@ class MainActivity : AppCompatActivity() {
                         pb_one.visibility = View.GONE
                         tv_result_friend_bot.text = error
                         cst_result_friendbot.background =
-                                ContextCompat.getDrawable(this@MainActivity, R.drawable.result_fail_background)
+                            ContextCompat.getDrawable(this@MainActivity, R.drawable.result_fail_background)
                         cst_result_friendbot.visibility = View.VISIBLE
                         cst_transaction.visibility = View.GONE
                     }
@@ -219,7 +232,7 @@ class MainActivity : AppCompatActivity() {
                         pb_one.visibility = View.GONE
                         tv_result_friend_bot.text = "SUCCESS! You have a new account :)"
                         cst_result_friendbot.background =
-                                ContextCompat.getDrawable(this@MainActivity, R.drawable.result_success_background)
+                            ContextCompat.getDrawable(this@MainActivity, R.drawable.result_success_background)
                         cst_result_friendbot.visibility = View.VISIBLE
                         cst_transaction.visibility = View.VISIBLE
                     }

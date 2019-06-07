@@ -581,6 +581,27 @@
 
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
+                    <TextView
+                            android:id="@+id/tv_add_asset_issuer"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Issuer"
+                            android:textColor="@color/stoke_default_button_color"
+                            android:textSize="10sp"
+                            android:layout_marginTop="10dp"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"/>
+
+                    <EditText
+                            android:id="@+id/edt_add_asset_issuer"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="text"
+                            android:padding="10dp"
+                            android:textColor="@color/md_grey_800"
+                            android:textSize="13sp"
+                            tools:text="GBDV7JYTKYZ3623PV63YYYOU34T6ICKL7GMMYGH2STU734RI3PJB6XM2"/>
+
                     <EditText
                             android:id="@+id/edt_asset_code"
                             android:layout_width="match_parent"
