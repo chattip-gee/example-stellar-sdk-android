@@ -50,34 +50,36 @@ class MainActivity : AppCompatActivity() {
 
     private fun onClickAddAsset() {
         btn_add_asset.setOnClickListener {
-            if (pair == null) Toast.makeText(applicationContext, "You don't have account", Toast.LENGTH_LONG).show()
+            if (pair == null) Toast.makeText(applicationContext, "You don't have account", Toast.LENGTH_SHORT).show()
 
             pair?.apply {
-                if (isNonNativeAsset()) {
-                    pb_five.visibility = View.VISIBLE
+                if (isAddAsset()) {
+                    pb_add_asset.visibility = View.VISIBLE
                     cst_result_add_asset.visibility = View.GONE
 
                     val item = AddAssetItem(
-                        issuer = edt_add_asset_issuer.text.toString(),
-                        secretKey = secretSeed,
-                        assetName = edt_asset_code.text.toString(),
-                        limit = edt_limit.text.toString()
+                            issuer = edt_add_asset_issuer.text.toString(),
+                            secretKey = secretSeed,
+                            assetName = edt_add_asset_code.text.toString(),
+                            limit = edt_add_asset_limit.text.toString()
                     )
                     Horizon.addAsset(item, object : OnResponse<SubmitTransactionResponse> {
                         override fun onError(error: String) {
-                            pb_five.visibility = View.GONE
-                            cst_result_add_asset.visibility = View.VISIBLE
+                            pb_add_asset.visibility = View.GONE
                             tv_result_add_asset.text = error
+                            cst_result_add_asset.background = ContextCompat.getDrawable(this@MainActivity, R.drawable.result_fail_background)
+                            cst_result_add_asset.visibility = View.VISIBLE
                         }
 
                         override fun onSuccess(response: SubmitTransactionResponse) {
-                            pb_five.visibility = View.GONE
-                            cst_result_add_asset.visibility = View.VISIBLE
+                            pb_add_asset.visibility = View.GONE
                             tv_result_add_asset.text = "SUCCESS! Added Asset"
+                            cst_result_receive.background = ContextCompat.getDrawable(this@MainActivity, R.drawable.result_success_background)
+                            cst_result_add_asset.visibility = View.VISIBLE
                         }
                     })
                 } else {
-                    Toast.makeText(applicationContext, "Please fill up this form.", Toast.LENGTH_LONG).show()
+                    Toast.makeText(applicationContext, "Please fill up this form.", Toast.LENGTH_SHORT).show()
                 }
             }
         }
@@ -99,25 +101,25 @@ class MainActivity : AppCompatActivity() {
 
     private fun onClickReceiveMoney() {
         btn_receive_money.setOnClickListener {
-            if (pair == null) Toast.makeText(applicationContext, "You don't have account", Toast.LENGTH_LONG).show()
+            if (pair == null) Toast.makeText(applicationContext, "You don't have account", Toast.LENGTH_SHORT).show()
 
             pair?.apply {
                 cst_result_receive.visibility = View.GONE
-                pb_four.visibility = View.VISIBLE
+                pb_receive_money.visibility = View.VISIBLE
                 Horizon.doReceiveMoney(accountId, object : OnResponse<ReceiverResponse> {
                     override fun onError(error: String) {
-                        pb_four.visibility = View.GONE
+                        pb_receive_money.visibility = View.GONE
                         tv_result_receive.text = error
                         cst_result_receive.background =
-                            ContextCompat.getDrawable(this@MainActivity, R.drawable.result_fail_background)
+                                ContextCompat.getDrawable(this@MainActivity, R.drawable.result_fail_background)
                         cst_result_receive.visibility = View.VISIBLE
                     }
 
                     override fun onSuccess(response: ReceiverResponse) {
-                        pb_four.visibility = View.GONE
+                        pb_receive_money.visibility = View.GONE
                         tv_result_receive.text = "${response.amount} ${response.assetName} from ${response.accountId}"
                         cst_result_receive.background =
-                            ContextCompat.getDrawable(this@MainActivity, R.drawable.result_success_background)
+                                ContextCompat.getDrawable(this@MainActivity, R.drawable.result_success_background)
                         cst_result_receive.visibility = View.VISIBLE
                     }
                 })
@@ -127,51 +129,55 @@ class MainActivity : AppCompatActivity() {
 
     private fun onClickSendMoney() {
         btn_send_money.setOnClickListener {
-            if (pair == null) Toast.makeText(applicationContext, "You don't have account", Toast.LENGTH_LONG).show()
+            if (pair == null) Toast.makeText(applicationContext, "You don't have account", Toast.LENGTH_SHORT).show()
 
             pair?.apply {
                 cst_result_send.visibility = View.GONE
                 if (!edt_send_destination.text.isNullOrEmpty() && !edt_send_memo.text.isNullOrEmpty() && !edt_send_amount.text.isNullOrEmpty()) {
                     val lumenTransaction = TransactionItem(
-                        destination = edt_send_destination.text.toString(),
-                        secretKey = secretSeed,
-                        memo = edt_send_memo.text.toString(),
-                        amount = edt_send_amount.text.toString(),
-                        assetName = null
+                            destination = edt_send_destination.text.toString(),
+                            secretKey = secretSeed,
+                            memo = edt_send_memo.text.toString(),
+                            amount = edt_send_amount.text.toString(),
+                            assetName = null
                     )
-                    if (isNonNativeAsset()) {
-                        val otherTransaction = lumenTransaction.copy(assetName = edt_asset_code.text.toString())
-                        doSendMoney(otherTransaction)
-                    } else {
-                        doSendMoney(lumenTransaction)
-                    }
-                } else Toast.makeText(applicationContext, "Please fill up this form.", Toast.LENGTH_LONG).show()
+
+                    if (select_others.isChecked) {
+                        sendMoneyByOtherAsset(lumenTransaction)
+                    } else doSendMoney(lumenTransaction)
+
+                } else Toast.makeText(applicationContext, "Please fill up this form.", Toast.LENGTH_SHORT).show()
 
             }
         }
     }
 
-    private fun isNonNativeAsset(): Boolean {
-        return !edt_asset_code.text.isNullOrEmpty() && !edt_limit.text.isNullOrEmpty()
+    private fun sendMoneyByOtherAsset(lumenTransaction: TransactionItem) {
+        if (!edt_asset_code.text.isNullOrEmpty()) {
+            val otherTransaction = lumenTransaction.copy(assetName = edt_asset_code.text.toString())
+            doSendMoney(otherTransaction)
+        } else Toast.makeText(applicationContext, "Please fill up this form.", Toast.LENGTH_SHORT).show()
+    }
+
+    private fun isAddAsset(): Boolean {
+        return !edt_add_asset_issuer.text.isNullOrEmpty() && !edt_add_asset_code.text.isNullOrEmpty() && !edt_add_asset_limit.text.isNullOrEmpty()
     }
 
     private fun doSendMoney(item: TransactionItem) {
-        pb_three.visibility = View.VISIBLE
+        pb_send_money.visibility = View.VISIBLE
         Horizon.sendMoney(item, object : OnResponse<SubmitTransactionResponse> {
             override fun onError(error: String) {
-                pb_three.visibility = View.GONE
+                pb_send_money.visibility = View.GONE
                 tv_result_send.text = error
-                cst_result_send.background =
-                    ContextCompat.getDrawable(this@MainActivity, R.drawable.result_fail_background)
+                cst_result_send.background = ContextCompat.getDrawable(this@MainActivity, R.drawable.result_fail_background)
                 cst_result_send.visibility = View.VISIBLE
                 cst_transaction_receive.visibility = View.GONE
             }
 
             override fun onSuccess(response: SubmitTransactionResponse) {
-                pb_three.visibility = View.GONE
+                pb_send_money.visibility = View.GONE
                 tv_result_send.text = "SUCCESS! Has been sent account :)"
-                cst_result_send.background =
-                    ContextCompat.getDrawable(this@MainActivity, R.drawable.result_success_background)
+                cst_result_send.background = ContextCompat.getDrawable(this@MainActivity, R.drawable.result_success_background)
                 cst_result_send.visibility = View.VISIBLE
                 cst_transaction_receive.visibility = View.VISIBLE
             }
@@ -180,29 +186,29 @@ class MainActivity : AppCompatActivity() {
 
     private fun onClickGetAccounts() {
         btn_get_account.setOnClickListener {
-            if (pair == null) Toast.makeText(applicationContext, "You don't have account", Toast.LENGTH_LONG).show()
+            if (pair == null) Toast.makeText(applicationContext, "You don't have account", Toast.LENGTH_SHORT).show()
 
             pair?.apply {
                 cst_account_detail.visibility = View.GONE
-                pb_two.visibility = View.VISIBLE
+                pb_get_account.visibility = View.VISIBLE
                 tv_account_detail_id.text = "Balances for account \n$accountId"
 
                 Horizon.getBalance(this, object : OnResponse<org.stellar.sdk.responses.AccountResponse> {
                     override fun onError(error: String) {
-                        pb_two.visibility = View.GONE
+                        pb_get_account.visibility = View.GONE
                         tv_account_detail.text = error
                         cst_account_detail.background =
-                            ContextCompat.getDrawable(this@MainActivity, R.drawable.result_fail_background)
+                                ContextCompat.getDrawable(this@MainActivity, R.drawable.result_fail_background)
                         cst_account_detail.visibility = View.VISIBLE
                     }
 
                     override fun onSuccess(response: org.stellar.sdk.responses.AccountResponse) {
                         for (balance in response.balances) {
-                            pb_two.visibility = View.GONE
+                            pb_get_account.visibility = View.GONE
                             tv_account_detail.text =
-                                String.format("Type: %s, Balance: %s", balance.assetType, balance.balance)
+                                    String.format("Type: %s, Balance: %s", balance.assetType, balance.balance)
                             cst_account_detail.background =
-                                ContextCompat.getDrawable(this@MainActivity, R.drawable.result_success_background)
+                                    ContextCompat.getDrawable(this@MainActivity, R.drawable.result_success_background)
                             cst_account_detail.visibility = View.VISIBLE
                         }
                     }
@@ -213,26 +219,26 @@ class MainActivity : AppCompatActivity() {
 
     private fun onClickGetFriendbot() {
         btn_get_test_network_lumens.setOnClickListener {
-            if (pair == null) Toast.makeText(applicationContext, "Please generate KeyPair", Toast.LENGTH_LONG).show()
+            if (pair == null) Toast.makeText(applicationContext, "Please generate KeyPair", Toast.LENGTH_SHORT).show()
 
             pair?.apply {
                 cst_result_friendbot.visibility = View.GONE
-                pb_one.visibility = View.VISIBLE
+                pb_get_test_network_lumens.visibility = View.VISIBLE
                 ApiManager().getFriendBot(accountId, object : OnResponse<FriendBotResponse> {
                     override fun onError(error: String) {
-                        pb_one.visibility = View.GONE
+                        pb_get_test_network_lumens.visibility = View.GONE
                         tv_result_friend_bot.text = error
                         cst_result_friendbot.background =
-                            ContextCompat.getDrawable(this@MainActivity, R.drawable.result_fail_background)
+                                ContextCompat.getDrawable(this@MainActivity, R.drawable.result_fail_background)
                         cst_result_friendbot.visibility = View.VISIBLE
                         cst_transaction.visibility = View.GONE
                     }
 
                     override fun onSuccess(response: FriendBotResponse) {
-                        pb_one.visibility = View.GONE
+                        pb_get_test_network_lumens.visibility = View.GONE
                         tv_result_friend_bot.text = "SUCCESS! You have a new account :)"
                         cst_result_friendbot.background =
-                            ContextCompat.getDrawable(this@MainActivity, R.drawable.result_success_background)
+                                ContextCompat.getDrawable(this@MainActivity, R.drawable.result_success_background)
                         cst_result_friendbot.visibility = View.VISIBLE
                         cst_transaction.visibility = View.VISIBLE
                     }
@@ -245,7 +251,7 @@ class MainActivity : AppCompatActivity() {
         btn_generate_keypair.setOnClickListener {
             val keyPair = KeyPair.random()
             pair = keyPair
-            if (pair == null) Toast.makeText(applicationContext, "Something went wrong", Toast.LENGTH_LONG).show()
+            if (pair == null) Toast.makeText(applicationContext, "Something went wrong", Toast.LENGTH_SHORT).show()
             pair?.apply {
                 generateQRCode(accountId, img_qrcode, 500)
                 tv_copy_public_key_id.visibility = View.VISIBLE
@@ -273,7 +279,7 @@ class MainActivity : AppCompatActivity() {
         val clip = ClipData.newPlainText("BlockEQ Address", data)
         clipboard.primaryClip = clip
 
-        Toast.makeText(this, "Address copied", Toast.LENGTH_LONG).show()
+        Toast.makeText(this, "Address copied", Toast.LENGTH_SHORT).show()
     }
 
 }

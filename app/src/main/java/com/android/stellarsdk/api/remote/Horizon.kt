@@ -63,7 +63,7 @@ object Horizon : HorizonTasks {
                 val assetResponse = server.submitTransaction(allowAsset)
                 Handler(Looper.getMainLooper()).post {
                     if (assetResponse.isSuccess) listener.onSuccess(assetResponse)
-                    else listener.onError("Identified for : ${addAssetItem.assetName}")
+                    else listener.onError("Address Identified for : ${addAssetItem.issuer}")
                 }
 
             } catch (error: Exception) {
