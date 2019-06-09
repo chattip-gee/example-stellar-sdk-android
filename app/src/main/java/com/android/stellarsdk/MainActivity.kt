@@ -9,6 +9,9 @@ import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.android.stellarsdk.adapter.BalanceAdapter
 import com.android.stellarsdk.api.callback.OnResponse
 import com.android.stellarsdk.api.model.friendbot.FriendBotResponse
 import com.android.stellarsdk.api.remote.AddAssetItem
@@ -20,18 +23,42 @@ import com.google.zxing.BarcodeFormat
 import com.journeyapps.barcodescanner.BarcodeEncoder
 import kotlinx.android.synthetic.main.activity_main.*
 import org.stellar.sdk.KeyPair
+import org.stellar.sdk.responses.AccountResponse
 import org.stellar.sdk.responses.SubmitTransactionResponse
 
 
 class MainActivity : AppCompatActivity() {
-
-    var pair: KeyPair? = null
-
     //TODO REFACTOR
+
+    private var pair: KeyPair? = null
+    private var viewAdapter: RecyclerView.Adapter<*>? = null
+    private val dataSet = ArrayList<AccountResponse.Balance>()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        setupView()
+        setupEvent()
+    }
+
+    private fun setupView() {
+        setDestination()
+
+        setupRecycleView()
+    }
+
+    private fun setupRecycleView() {
+        viewAdapter = BalanceAdapter(dataSet)
+        val viewManager: RecyclerView.LayoutManager = LinearLayoutManager(this)
+        rv_account_detail.apply {
+            setHasFixedSize(true)
+            layoutManager = viewManager
+            adapter = viewAdapter
+        }
+    }
+
+    private fun setupEvent() {
         onClickGenerateKeyPair()
 
         onClickGetFriendbot()
@@ -42,10 +69,7 @@ class MainActivity : AppCompatActivity() {
 
         onClickReceiveMoney()
 
-        setDestination()
-
         onClickAddAsset()
-
     }
 
     private fun onClickAddAsset() {
@@ -58,23 +82,25 @@ class MainActivity : AppCompatActivity() {
                     cst_result_add_asset.visibility = View.GONE
 
                     val item = AddAssetItem(
-                            issuer = edt_add_asset_issuer.text.toString(),
-                            secretKey = secretSeed,
-                            assetName = edt_add_asset_code.text.toString(),
-                            limit = edt_add_asset_limit.text.toString()
+                        issuer = edt_add_asset_issuer.text.toString(),
+                        secretKey = secretSeed,
+                        assetName = edt_add_asset_code.text.toString(),
+                        limit = edt_add_asset_limit.text.toString()
                     )
                     Horizon.addAsset(item, object : OnResponse<SubmitTransactionResponse> {
                         override fun onError(error: String) {
                             pb_add_asset.visibility = View.GONE
                             tv_result_add_asset.text = error
-                            cst_result_add_asset.background = ContextCompat.getDrawable(this@MainActivity, R.drawable.result_fail_background)
+                            cst_result_add_asset.background =
+                                ContextCompat.getDrawable(this@MainActivity, R.drawable.result_fail_background)
                             cst_result_add_asset.visibility = View.VISIBLE
                         }
 
                         override fun onSuccess(response: SubmitTransactionResponse) {
                             pb_add_asset.visibility = View.GONE
                             tv_result_add_asset.text = "SUCCESS! Added Asset"
-                            cst_result_receive.background = ContextCompat.getDrawable(this@MainActivity, R.drawable.result_success_background)
+                            cst_result_receive.background =
+                                ContextCompat.getDrawable(this@MainActivity, R.drawable.result_success_background)
                             cst_result_add_asset.visibility = View.VISIBLE
                         }
                     })
@@ -111,7 +137,7 @@ class MainActivity : AppCompatActivity() {
                         pb_receive_money.visibility = View.GONE
                         tv_result_receive.text = error
                         cst_result_receive.background =
-                                ContextCompat.getDrawable(this@MainActivity, R.drawable.result_fail_background)
+                            ContextCompat.getDrawable(this@MainActivity, R.drawable.result_fail_background)
                         cst_result_receive.visibility = View.VISIBLE
                     }
 
@@ -119,7 +145,7 @@ class MainActivity : AppCompatActivity() {
                         pb_receive_money.visibility = View.GONE
                         tv_result_receive.text = "${response.amount} ${response.assetName} from ${response.accountId}"
                         cst_result_receive.background =
-                                ContextCompat.getDrawable(this@MainActivity, R.drawable.result_success_background)
+                            ContextCompat.getDrawable(this@MainActivity, R.drawable.result_success_background)
                         cst_result_receive.visibility = View.VISIBLE
                     }
                 })
@@ -135,11 +161,11 @@ class MainActivity : AppCompatActivity() {
                 cst_result_send.visibility = View.GONE
                 if (!edt_send_destination.text.isNullOrEmpty() && !edt_send_memo.text.isNullOrEmpty() && !edt_send_amount.text.isNullOrEmpty()) {
                     val lumenTransaction = TransactionItem(
-                            destination = edt_send_destination.text.toString(),
-                            secretKey = secretSeed,
-                            memo = edt_send_memo.text.toString(),
-                            amount = edt_send_amount.text.toString(),
-                            assetName = null
+                        destination = edt_send_destination.text.toString(),
+                        secretKey = secretSeed,
+                        memo = edt_send_memo.text.toString(),
+                        amount = edt_send_amount.text.toString(),
+                        assetName = null
                     )
 
                     if (select_others.isChecked) {
@@ -169,7 +195,8 @@ class MainActivity : AppCompatActivity() {
             override fun onError(error: String) {
                 pb_send_money.visibility = View.GONE
                 tv_result_send.text = error
-                cst_result_send.background = ContextCompat.getDrawable(this@MainActivity, R.drawable.result_fail_background)
+                cst_result_send.background =
+                    ContextCompat.getDrawable(this@MainActivity, R.drawable.result_fail_background)
                 cst_result_send.visibility = View.VISIBLE
                 cst_transaction_receive.visibility = View.GONE
             }
@@ -177,7 +204,8 @@ class MainActivity : AppCompatActivity() {
             override fun onSuccess(response: SubmitTransactionResponse) {
                 pb_send_money.visibility = View.GONE
                 tv_result_send.text = "SUCCESS! Has been sent account :)"
-                cst_result_send.background = ContextCompat.getDrawable(this@MainActivity, R.drawable.result_success_background)
+                cst_result_send.background =
+                    ContextCompat.getDrawable(this@MainActivity, R.drawable.result_success_background)
                 cst_result_send.visibility = View.VISIBLE
                 cst_transaction_receive.visibility = View.VISIBLE
             }
@@ -193,22 +221,22 @@ class MainActivity : AppCompatActivity() {
                 pb_get_account.visibility = View.VISIBLE
                 tv_account_detail_id.text = "Balances for account \n$accountId"
 
-                Horizon.getBalance(this, object : OnResponse<org.stellar.sdk.responses.AccountResponse> {
+                Horizon.getBalance(this, object : OnResponse<AccountResponse> {
                     override fun onError(error: String) {
                         pb_get_account.visibility = View.GONE
-                        tv_account_detail.text = error
+                        rv_account_detail.visibility = View.GONE
                         cst_account_detail.background =
-                                ContextCompat.getDrawable(this@MainActivity, R.drawable.result_fail_background)
+                            ContextCompat.getDrawable(this@MainActivity, R.drawable.result_fail_background)
                         cst_account_detail.visibility = View.VISIBLE
                     }
 
-                    override fun onSuccess(response: org.stellar.sdk.responses.AccountResponse) {
+                    override fun onSuccess(response: AccountResponse) {
+                        dataSet.clear()
                         for (balance in response.balances) {
+                            dataSet.add(balance)
+                            viewAdapter?.notifyDataSetChanged()
                             pb_get_account.visibility = View.GONE
-                            tv_account_detail.text =
-                                    String.format("Type: %s, Balance: %s", balance.assetType, balance.balance)
-                            cst_account_detail.background =
-                                    ContextCompat.getDrawable(this@MainActivity, R.drawable.result_success_background)
+                            cst_account_detail.background = ContextCompat.getDrawable(this@MainActivity, R.drawable.result_success_background)
                             cst_account_detail.visibility = View.VISIBLE
                         }
                     }
@@ -229,7 +257,7 @@ class MainActivity : AppCompatActivity() {
                         pb_get_test_network_lumens.visibility = View.GONE
                         tv_result_friend_bot.text = error
                         cst_result_friendbot.background =
-                                ContextCompat.getDrawable(this@MainActivity, R.drawable.result_fail_background)
+                            ContextCompat.getDrawable(this@MainActivity, R.drawable.result_fail_background)
                         cst_result_friendbot.visibility = View.VISIBLE
                         cst_transaction.visibility = View.GONE
                     }
@@ -238,7 +266,7 @@ class MainActivity : AppCompatActivity() {
                         pb_get_test_network_lumens.visibility = View.GONE
                         tv_result_friend_bot.text = "SUCCESS! You have a new account :)"
                         cst_result_friendbot.background =
-                                ContextCompat.getDrawable(this@MainActivity, R.drawable.result_success_background)
+                            ContextCompat.getDrawable(this@MainActivity, R.drawable.result_success_background)
                         cst_result_friendbot.visibility = View.VISIBLE
                         cst_transaction.visibility = View.VISIBLE
                     }
