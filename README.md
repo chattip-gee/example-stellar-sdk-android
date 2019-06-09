@@ -11,4 +11,4 @@ Reference: https://www.stellar.org/laboratory/
 6. Feature receive money
 7. Feature issuing-assets
 8. Feature Generate QR Code and Copy Clipboard
-9. Feature Add Asset that User can payment by custom currency
+9. Feature Add Asset that user can payment by custom currency
