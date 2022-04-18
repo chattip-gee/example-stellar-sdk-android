@@ -1,0 +1,809 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:id="@+id/scv_page"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:context=".MainActivity">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="40dp">
+
+        <TextView
+                android:id="@+id/content_desc"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:paddingTop="10dp"
+                android:text="Mode : Developer
+                \nServer : https://horizon-testnet.stellar.org
+                \nDescription: Test Functionality"
+                android:textAlignment="center"
+                android:textColor="@color/md_orange_700"
+                android:textSize="13sp"
+                android:textStyle="italic"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"/>
+
+        <TextView
+                android:id="@+id/tv_title1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="Step 1. Keypair generator"
+                android:textColor="@android:color/black"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="@id/content_desc"
+                app:layout_constraintTop_toBottomOf="@id/content_desc"/>
+
+        <Button
+                android:id="@+id/btn_generate_keypair"
+                android:layout_width="145dp"
+                android:layout_height="40dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/btn_background"
+                android:padding="10dp"
+                android:stateListAnimator="@null"
+                android:text="Generate keypair"
+                android:textAllCaps="false"
+                android:textColor="@android:color/white"
+                android:textSize="14sp"
+                app:layout_constraintStart_toStartOf="@id/tv_title1"
+                app:layout_constraintTop_toBottomOf="@id/tv_title1"/>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/cst_generate_keypair"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="10dp"
+                android:background="@drawable/default_background"
+                android:padding="10dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/btn_generate_keypair"
+                app:layout_constraintTop_toBottomOf="@+id/btn_generate_keypair">
+
+            <ImageView
+                    android:id="@+id/img_qrcode"
+                    android:layout_width="180dp"
+                    android:layout_height="180dp"
+                    android:background="@color/md_white_1000"
+                    android:visibility="gone"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"/>
+
+            <TextView
+                    android:id="@+id/tv_public_key"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Public Key : "
+                    android:textColor="@android:color/black"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="@id/img_qrcode"
+                    app:layout_constraintTop_toBottomOf="@id/img_qrcode"/>
+
+            <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/tv_copy_public_key_id"
+                    android:layout_width="0dp"
+                    android:layout_height="20dp"
+                    android:background="@color/background_button_color"
+                    android:paddingStart="10dp"
+                    android:paddingEnd="10dp"
+                    android:text="Copy"
+                    android:textAllCaps="true"
+                    android:textColor="@color/md_white_1000"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    android:visibility="visible"
+                    app:layout_constraintEnd_toEndOf="@id/tv_public_key"
+                    app:layout_constraintStart_toStartOf="@id/tv_public_key"
+                    app:layout_constraintTop_toBottomOf="@id/tv_public_key"/>
+
+            <TextView
+                    android:id="@+id/tv_public_key_id"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:hint="GATEP5ZLIXU4QDCRBY3KG5VRXWHIIN2LSY6RONUUP74P777C5LDRPCUI"
+                    android:paddingStart="10dp"
+                    android:paddingEnd="6dp"
+                    android:textColor="@android:color/black"
+                    android:textSize="12sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/tv_public_key"
+                    app:layout_constraintTop_toTopOf="@id/tv_public_key"/>
+
+            <TextView
+                    android:id="@+id/tv_secret_key"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="28dp"
+                    android:text="Secret Key : "
+                    android:textColor="@android:color/black"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="@+id/tv_public_key"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_public_key"/>
+
+            <Button
+                    android:id="@+id/tv_copy_secret_key_id"
+                    android:layout_width="0dp"
+                    android:layout_height="20dp"
+                    android:background="@color/background_button_color"
+                    android:paddingStart="10dp"
+                    android:paddingEnd="10dp"
+                    android:text="Copy"
+                    android:textAllCaps="true"
+                    android:textColor="@color/md_white_1000"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    android:visibility="visible"
+                    app:layout_constraintEnd_toEndOf="@id/tv_secret_key"
+                    app:layout_constraintStart_toStartOf="@id/tv_secret_key"
+                    app:layout_constraintTop_toBottomOf="@id/tv_secret_key"/>
+
+            <TextView
+                    android:id="@+id/tv_secret_key_id"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:hint="SBC5THX3X5CFLWVCJIMWD7S2NRRQRUD7BTLGFFYXV33EDNUXAI57DU2V"
+                    android:paddingStart="10dp"
+                    android:paddingEnd="0dp"
+                    android:textColor="@android:color/black"
+                    android:textSize="12sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/tv_secret_key"
+                    app:layout_constraintTop_toTopOf="@id/tv_secret_key"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <TextView
+                android:id="@+id/tv_title2"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="25dp"
+                android:text="Step 2. Friendbot: Fund a test network account"
+                android:textColor="@android:color/black"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="@id/cst_generate_keypair"
+                app:layout_constraintTop_toBottomOf="@id/cst_generate_keypair"/>
+
+        <TextView
+                android:id="@+id/tv_describe_friend_bot"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:paddingStart="0dp"
+                android:paddingEnd="10dp"
+                android:text="The friendbot is a horizon API endpoint that will fund an account with 10,000 lumens on the test network."
+                android:textColor="@android:color/black"
+                android:textSize="12sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@id/tv_title2"
+                app:layout_constraintTop_toBottomOf="@id/tv_title2"/>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/cst_friendbot"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="10dp"
+                android:background="@drawable/default_background"
+                android:padding="10dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/tv_describe_friend_bot"
+                app:layout_constraintTop_toBottomOf="@+id/tv_describe_friend_bot">
+
+            <TextView
+                    android:id="@+id/tv_account_id"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:hint="GATEP5ZLIXU4QDCRBY3KG5VRXWHIIN2LSY6RONUUP74P777C5LDRPCUI"
+                    android:textColor="@android:color/black"
+                    android:textSize="12sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <Button
+                android:id="@+id/btn_get_test_network_lumens"
+                android:layout_width="185dp"
+                android:layout_height="40dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/btn_background"
+                android:padding="10dp"
+                android:stateListAnimator="@null"
+                android:text="Get test network lumens"
+                android:textAllCaps="false"
+                android:textColor="@android:color/white"
+                android:textSize="14sp"
+                app:layout_constraintStart_toStartOf="@id/tv_title1"
+                app:layout_constraintTop_toBottomOf="@id/cst_friendbot"/>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/cst_result_friendbot"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="10dp"
+                android:background="@drawable/result_success_background"
+                android:padding="10dp"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/btn_generate_keypair"
+                app:layout_constraintTop_toBottomOf="@+id/btn_get_test_network_lumens"
+                tools:visibility="visible">
+
+            <TextView
+                    android:id="@+id/tv_result_friend_bot"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@android:color/black"
+                    android:textSize="12sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:text="Successfully funded GDG4TECFYPWOUJIJ6QQSHFFDT5ORVEZ7GGKBSMSCI5PKI4SH2EA3C5AE on the test network"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <ProgressBar
+                android:id="@+id/pb_get_test_network_lumens"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginStart="16dp"
+                android:indeterminate="true"
+                android:indeterminateTint="@color/stoke_default_button_color"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="@id/btn_get_test_network_lumens"
+                app:layout_constraintStart_toEndOf="@id/btn_get_test_network_lumens"
+                app:layout_constraintTop_toTopOf="@id/btn_get_test_network_lumens"
+                tools:visibility="visible"/>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/cst_transaction"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@id/btn_get_test_network_lumens"
+                app:layout_constraintTop_toBottomOf="@id/cst_result_friendbot"
+                tools:visibility="visible">
+
+            <TextView
+                    android:id="@+id/tv_title3"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="25dp"
+                    android:text="Step 3. Getting the account’s details "
+                    android:textColor="@android:color/black"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"/>
+
+            <Button
+                    android:id="@+id/btn_get_account"
+                    android:layout_width="185dp"
+                    android:layout_height="40dp"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/btn_background"
+                    android:padding="10dp"
+                    android:stateListAnimator="@null"
+                    android:text="Get Account Balance"
+                    android:textAllCaps="false"
+                    android:textColor="@android:color/white"
+                    android:textSize="14sp"
+                    app:layout_constraintStart_toStartOf="@id/tv_title3"
+                    app:layout_constraintTop_toBottomOf="@id/tv_title3"/>
+
+            <ProgressBar
+                    android:id="@+id/pb_get_account"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_marginStart="16dp"
+                    android:indeterminate="true"
+                    android:indeterminateTint="@color/stoke_default_button_color"
+                    android:visibility="gone"
+                    app:layout_constraintBottom_toBottomOf="@id/btn_get_account"
+                    app:layout_constraintStart_toEndOf="@id/btn_get_account"
+                    app:layout_constraintTop_toTopOf="@id/btn_get_account"
+                    tools:visibility="visible"/>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/cst_account_detail"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:background="@drawable/result_success_background"
+                    android:padding="10dp"
+                    android:visibility="gone"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="@+id/btn_get_account"
+                    app:layout_constraintTop_toBottomOf="@+id/btn_get_account"
+                    tools:visibility="visible">
+
+                <TextView
+                        android:id="@+id/tv_account_detail_id"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@android:color/black"
+                        android:textSize="12sp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:text="Balances for account GATEP5ZLIXU4QDCRBY3KG5VRXWHIIN2LSY6RONUUP74P777C5LDRPCUI"/>
+
+                <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/rv_account_detail"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="6dp"
+                        android:nestedScrollingEnabled="false"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="@id/tv_account_detail_id"
+                        app:layout_constraintTop_toBottomOf="@id/tv_account_detail_id"/>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <TextView
+                    android:id="@+id/tv_title4"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="25dp"
+                    android:text="Step 4.Add Asset"
+                    android:textColor="@android:color/black"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="@id/btn_get_account"
+                    app:layout_constraintTop_toBottomOf="@id/cst_account_detail"/>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/cst_add_asset"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:background="@drawable/default_background"
+                    android:padding="10dp"
+                    android:visibility="visible"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="@+id/tv_title4"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_title4">
+
+                <LinearLayout
+                        android:id="@+id/li_add_asset"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent">
+
+                    <TextView
+                            android:id="@+id/tv_add_asset_issuer"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:text="Issuer"
+                            android:textColor="@color/stoke_default_button_color"
+                            android:textSize="10sp"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"/>
+
+                    <EditText
+                            android:id="@+id/edt_add_asset_issuer"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="text"
+                            android:padding="10dp"
+                            android:textColor="@color/md_grey_800"
+                            android:textSize="13sp"
+                            tools:text="GBDV7JYTKYZ3623PV63YYYOU34T6ICKL7GMMYGH2STU734RI3PJB6XM2"/>
+
+                    <EditText
+                            android:id="@+id/edt_add_asset_code"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:hint="BTC"
+                            android:inputType="text"
+                            android:padding="10dp"
+                            android:textColor="@color/md_grey_800"
+                            android:textSize="13sp"/>
+
+                    <EditText
+                            android:id="@+id/edt_add_asset_limit"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:hint="limit"
+                            android:inputType="number"
+                            android:padding="10dp"
+                            android:textSize="13sp"/>
+
+                </LinearLayout>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <Button
+                    android:id="@+id/btn_add_asset"
+                    android:layout_width="185dp"
+                    android:layout_height="40dp"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/btn_background"
+                    android:padding="10dp"
+                    android:stateListAnimator="@null"
+                    android:text="Add Asset"
+                    android:textAllCaps="false"
+                    android:textColor="@android:color/white"
+                    android:textSize="14sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/cst_add_asset"/>
+
+            <ProgressBar
+                    android:id="@+id/pb_add_asset"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_marginStart="16dp"
+                    android:indeterminate="true"
+                    android:indeterminateTint="@color/stoke_default_button_color"
+                    android:visibility="gone"
+                    app:layout_constraintBottom_toBottomOf="@id/btn_add_asset"
+                    app:layout_constraintStart_toEndOf="@id/btn_add_asset"
+                    app:layout_constraintTop_toTopOf="@id/btn_add_asset"
+                    tools:visibility="visible"/>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/cst_result_add_asset"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:background="@drawable/result_success_background"
+                    android:padding="10dp"
+                    android:visibility="gone"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="@+id/btn_add_asset"
+                    app:layout_constraintTop_toBottomOf="@+id/btn_add_asset"
+                    tools:visibility="visible">
+
+                <TextView
+                        android:id="@+id/tv_result_add_asset"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@android:color/black"
+                        android:textSize="12sp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:text="Successfully!"/>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <TextView
+                    android:id="@+id/tv_title5"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="25dp"
+                    android:text="Step 5. Send Money"
+                    android:textColor="@android:color/black"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="@id/btn_add_asset"
+                    app:layout_constraintTop_toBottomOf="@id/cst_result_add_asset"/>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/cst_send_money"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:background="@drawable/default_background"
+                    android:padding="10dp"
+                    android:visibility="visible"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="@+id/tv_title5"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_title5">
+
+                <TextView
+                        android:id="@+id/tv_send_destination"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:text="Destination"
+                        android:textColor="@color/stoke_default_button_color"
+                        android:textSize="10sp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"/>
+
+                <EditText
+                        android:id="@+id/edt_send_destination"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:inputType="text"
+                        android:padding="10dp"
+                        android:textColor="@color/md_grey_800"
+                        android:textSize="13sp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="@id/tv_send_destination"
+                        app:layout_constraintTop_toBottomOf="@id/tv_send_destination"
+                        tools:text="GBDV7JYTKYZ3623PV63YYYOU34T6ICKL7GMMYGH2STU734RI3PJB6XM2"/>
+
+                <TextView
+                        android:id="@+id/tv_send_base_free"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:paddingTop="10dp"
+                        android:text="Base Free"
+                        android:textColor="@color/stoke_default_button_color"
+                        android:textSize="10sp"
+                        app:layout_constraintBottom_toTopOf="@id/edt_send_base_free"
+                        app:layout_constraintStart_toStartOf="@id/edt_send_destination"
+                        app:layout_constraintTop_toBottomOf="@id/edt_send_destination"/>
+
+                <TextView
+                        android:id="@+id/tv_base_free_desc"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:maxLines="1"
+                        android:paddingTop="10dp"
+                        android:text="   Currently set to 100 stroops (0.00001 lumens)"
+                        android:textColor="@android:color/black"
+                        android:textSize="10sp"
+                        app:layout_constraintBottom_toBottomOf="@id/tv_send_base_free"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/tv_send_base_free"
+                        app:layout_constraintTop_toTopOf="@id/tv_send_base_free"/>
+
+                <EditText
+                        android:id="@+id/edt_send_base_free"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:enabled="false"
+                        android:inputType="number"
+                        android:padding="10dp"
+                        android:text="100"
+                        android:textColor="@color/md_grey_800"
+                        android:textSize="13sp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="@id/tv_send_base_free"
+                        app:layout_constraintTop_toBottomOf="@id/tv_send_base_free"/>
+
+                <EditText
+                        android:id="@+id/edt_send_amount"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:hint="amount"
+                        android:inputType="number"
+                        android:padding="10dp"
+                        android:textSize="13sp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="@id/edt_send_base_free"
+                        app:layout_constraintTop_toBottomOf="@id/edt_send_base_free"/>
+
+                <EditText
+                        android:id="@+id/edt_send_memo"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:hint="memo"
+                        android:inputType="text"
+                        android:padding="10dp"
+                        android:textSize="13sp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="@id/edt_send_amount"
+                        app:layout_constraintTop_toBottomOf="@id/edt_send_amount"/>
+
+                <TextView
+                        android:id="@+id/tv_asset"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:text="Asset"
+                        android:textColor="@color/stoke_default_button_color"
+                        android:textSize="10sp"
+                        app:layout_constraintStart_toStartOf="@id/edt_send_memo"
+                        app:layout_constraintTop_toBottomOf="@id/edt_send_memo"/>
+
+                <RadioGroup
+                        android:id="@+id/group_select"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:checkedButton="1"
+                        android:gravity="center_horizontal"
+                        android:orientation="horizontal"
+                        app:layout_constraintStart_toStartOf="@id/tv_asset"
+                        app:layout_constraintTop_toBottomOf="@id/tv_asset">
+
+                    <RadioButton
+                            android:id="@+id/select_xlm"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:buttonTint="@color/stoke_default_button_color"
+                            android:checked="true"
+                            android:text="Stellar Lumens (XLM)"
+                            android:textColor="@color/md_grey_800"
+                            android:textSize="13sp"/>
+
+                    <RadioButton
+                            android:id="@+id/select_others"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="18dp"
+                            android:buttonTint="@color/stoke_default_button_color"
+                            android:text="Others"
+                            android:textColor="@color/md_grey_800"
+                            android:textSize="13sp"/>
+
+                </RadioGroup>
+
+                <LinearLayout
+                        android:id="@+id/li_fill_others"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:visibility="gone"
+                        app:layout_constraintStart_toStartOf="@id/group_select"
+                        app:layout_constraintTop_toBottomOf="@id/group_select"
+                        tools:visibility="visible">
+
+                    <EditText
+                            android:id="@+id/edt_asset_code"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:hint="BTC"
+                            android:inputType="text"
+                            android:padding="10dp"
+                            android:textColor="@color/md_grey_800"
+                            android:textSize="13sp"/>
+
+                </LinearLayout>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <Button
+                    android:id="@+id/btn_send_money"
+                    android:layout_width="185dp"
+                    android:layout_height="40dp"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/btn_background"
+                    android:padding="10dp"
+                    android:stateListAnimator="@null"
+                    android:text="Send Money"
+                    android:textAllCaps="false"
+                    android:textColor="@android:color/white"
+                    android:textSize="14sp"
+                    app:layout_constraintStart_toStartOf="@id/cst_send_money"
+                    app:layout_constraintTop_toBottomOf="@id/cst_send_money"/>
+
+            <ProgressBar
+                    android:id="@+id/pb_send_money"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_marginStart="16dp"
+                    android:indeterminate="true"
+                    android:indeterminateTint="@color/stoke_default_button_color"
+                    android:visibility="gone"
+                    app:layout_constraintBottom_toBottomOf="@id/btn_send_money"
+                    app:layout_constraintStart_toEndOf="@id/btn_send_money"
+                    app:layout_constraintTop_toTopOf="@id/btn_send_money"
+                    tools:visibility="visible"/>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/cst_result_send"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:background="@drawable/result_success_background"
+                    android:padding="10dp"
+                    android:visibility="gone"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="@+id/btn_send_money"
+                    app:layout_constraintTop_toBottomOf="@+id/btn_send_money"
+                    tools:visibility="visible">
+
+                <TextView
+                        android:id="@+id/tv_result_send"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@android:color/black"
+                        android:textSize="12sp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:text="Successfully!"/>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/cst_transaction_receive"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="@id/btn_send_money"
+                    app:layout_constraintTop_toBottomOf="@id/cst_result_send"
+                    tools:visibility="visible">
+
+                <TextView
+                        android:id="@+id/tv_title6"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="25dp"
+                        android:text="Step 6. Receive Money"
+                        android:textColor="@android:color/black"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"/>
+
+                <Button
+                        android:id="@+id/btn_receive_money"
+                        android:layout_width="185dp"
+                        android:layout_height="40dp"
+                        android:layout_marginTop="10dp"
+                        android:background="@drawable/btn_background"
+                        android:padding="10dp"
+                        android:stateListAnimator="@null"
+                        android:text="Get Receive"
+                        android:textAllCaps="false"
+                        android:textColor="@android:color/white"
+                        android:textSize="14sp"
+                        app:layout_constraintStart_toStartOf="@id/tv_title6"
+                        app:layout_constraintTop_toBottomOf="@id/tv_title6"/>
+
+                <ProgressBar
+                        android:id="@+id/pb_receive_money"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_marginStart="16dp"
+                        android:indeterminate="true"
+                        android:indeterminateTint="@color/stoke_default_button_color"
+                        android:visibility="gone"
+                        app:layout_constraintBottom_toBottomOf="@id/btn_receive_money"
+                        app:layout_constraintStart_toEndOf="@id/btn_receive_money"
+                        app:layout_constraintTop_toTopOf="@id/btn_receive_money"
+                        tools:visibility="visible"/>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/cst_result_receive"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginEnd="10dp"
+                        android:background="@drawable/result_success_background"
+                        android:padding="10dp"
+                        android:visibility="gone"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="@+id/btn_receive_money"
+                        app:layout_constraintTop_toBottomOf="@+id/btn_receive_money"
+                        tools:visibility="visible">
+
+                    <TextView
+                            android:id="@+id/tv_result_receive"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@android:color/black"
+                            android:textSize="12sp"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            tools:text="10.0000000 lumens from GATEP5ZLIXU4QDCRBY3KG5VRXWHIIN2LSY6RONUUP74P777C5LDRPCUI"/>
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</ScrollView>
+

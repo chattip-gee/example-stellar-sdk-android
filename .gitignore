@@ -66,6 +66,6 @@ fastlane/readme.md
 .idea/encodings.xml
 .idea/misc.xml
 .idea/modules.xml
-.idea/runConfigurations.xml
 .idea/vcs.xml
+.idea/runConfigurations.xml
 .idea/codeStyles/Project.xml

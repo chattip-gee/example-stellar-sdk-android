@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#008577</color>
+    <color name="colorPrimaryDark">#00574B</color>
+    <color name="colorAccent">#D81B60</color>
+
+    <color name="stoke_default_color">#BDBFC0</color>
+    <color name="stoke_default_button_color">#408EB3</color>
+    <color name="background_button_color">#52B2E0</color>
+    <color name="stoke_result_color">#4B873E</color>
+    <color name="background_result_color">#D9E6D7</color>
+</resources>
